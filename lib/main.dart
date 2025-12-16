@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:fogonesia/screens/home_page.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:fogonesia/utils/app_boot_strap.dart';
+import 'package:fogonesia/app/app_bootstrap.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
