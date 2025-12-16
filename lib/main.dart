@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:fogonesia/controllers/theme_controller.dart';
-import 'package:fogonesia/screens/home_page.dart';
 import 'package:fogonesia/theme/app_theme.dart' as AppTheme;
+import 'package:fogonesia/utils/routes.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:fogonesia/app/app_bootstrap.dart';
@@ -24,7 +24,8 @@ class MyApp extends StatelessWidget {
       theme: AppTheme.lightMode,
       darkTheme: AppTheme.darkMode,
       themeMode: theme.themeMode,
-      home: HomePage(),
+      initialRoute: Routes.home,
+      //home: HomePage(),
     );
   }
 }
