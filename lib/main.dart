@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:fogonesia/screens/home_page.dart';
+import 'package:fogonesia/theme/app_theme.dart' as AppTheme;
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:fogonesia/app/app_bootstrap.dart';
 
@@ -17,9 +18,9 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Flutter Demo',
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.teal),
-      ),
+      theme: AppTheme.lightMode,
+      darkTheme: AppTheme.darkMode,
+      themeMode: ThemeMode.system,
       home: HomePage(),
     );
   }
