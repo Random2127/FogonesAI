@@ -20,12 +20,12 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = context.watch<ThemeController>();
     return MaterialApp(
-      title: 'Flutter Demo',
+      debugShowCheckedModeBanner: false,
       theme: AppTheme.lightMode,
       darkTheme: AppTheme.darkMode,
       themeMode: theme.themeMode,
       initialRoute: Routes.home,
-      //home: HomePage(),
+      routes: Routes.routes,
     );
   }
 }
