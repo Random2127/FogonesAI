@@ -20,4 +20,8 @@ class ThemeController extends ChangeNotifier {
     _prefs.setString(_themeKey, mode.name);
     notifyListeners();
   }
+
+  bool get isDarkMode {
+    return themeMode == ThemeMode.dark;
+  }
 }
