@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:fogonesia/screens/chat_screen.dart';
 import 'package:fogonesia/screens/dietary_screen.dart';
 import 'package:fogonesia/screens/recipes_screen.dart';
+import 'package:fogonesia/widgets/custom_drawer.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -24,9 +25,12 @@ class _HomePageState extends State<HomePage> {
         title: const Text('FogonesIA'),
         backgroundColor: Theme.of(context).colorScheme.primaryContainer,
       ),
+      drawer: CustomDrawer(),
+
       body: IndexedStack(index: _selectedIndex, children: _screens),
       bottomNavigationBar: BottomNavigationBar(
         backgroundColor: Theme.of(context).colorScheme.primaryContainer,
+        selectedItemColor: Theme.of(context).colorScheme.onPrimaryContainer,
         currentIndex: _selectedIndex,
         onTap: (index) {
           setState(() {
