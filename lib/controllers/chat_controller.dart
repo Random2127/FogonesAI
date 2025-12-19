@@ -10,10 +10,10 @@ class ChatController extends ChangeNotifier {
   ChatController(this._geminiService);
 
   bool isLoading = false;
-  final List<ChatMessage> _messages = [];
+  final List<ChatMessage> messages = [];
 
   Future<void> sendMessage(String userInput, DietaryOptions options) async {
-    _messages.add(ChatMessage(userInput, MessageSender.user));
+    messages.add(ChatMessage(userInput, MessageSender.user));
     isLoading = true;
     notifyListeners();
 
@@ -21,14 +21,9 @@ class ChatController extends ChangeNotifier {
 
     try {
       final response = await _geminiService.generateRecipe(prompt);
-      _messages.add(ChatMessage(response, MessageSender.ai));
+      messages.add(ChatMessage(response, MessageSender.ai));
     } catch (e) {
-      _messages.add(
-        ChatMessage(
-          'Sorry, there was an error generating the recipe. Please try again later.',
-          MessageSender.ai,
-        ),
-      );
+      messages.add(ChatMessage('Error: $e', MessageSender.ai));
     } finally {
       isLoading = false;
       notifyListeners();

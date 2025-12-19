@@ -1,6 +1,6 @@
-// This is where we build the prompt for the recipe generation AI model.
 import 'package:fogonesia/models/dietary_options.dart';
 
+// Build the prompt for Gemini API
 String buildRecipePrompt({
   required String userPrompt,
   required DietaryOptions options,
