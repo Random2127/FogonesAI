@@ -6,7 +6,7 @@ class DietaryController extends ChangeNotifier {
 
   DietaryOptions get options => _options;
 
-  void updateOptions({
+  void updateOption({
     bool? isVegan,
     bool? isVegetarian,
     bool? isGlutenFree,
@@ -29,7 +29,7 @@ class DietaryController extends ChangeNotifier {
     notifyListeners();
   }
 
-  void resetOptions() {
+  void resetOption() {
     _options = DietaryOptions();
     notifyListeners();
   }
