@@ -11,7 +11,7 @@ class RecipeCard extends StatelessWidget {
       margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       decoration: BoxDecoration(
         // Semi-transparent background for that "glass" effect
-        color: Colors.grey,
+        color: Colors.blueGrey,
         borderRadius: BorderRadius.circular(24),
         border: Border.all(color: Colors.purple),
       ),
@@ -76,6 +76,14 @@ class RecipeCard extends StatelessWidget {
               ...recipe.instructions.asMap().entries.map(
                 (entry) => _buildInstructionStep(entry.key + 1, entry.value),
               ),
+
+              Align(
+                alignment: Alignment.centerRight,
+                child: FloatingActionButton(
+                  onPressed: null,
+                  child: Icon(Icons.favorite),
+                ),
+              ),
             ],
           ),
         ),
@@ -130,16 +138,17 @@ class RecipeCard extends StatelessWidget {
   Widget _buildIngredientTag(String text) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-      decoration: BoxDecoration(
-        color: Colors.grey,
-        borderRadius: BorderRadius.circular(8),
-      ),
+      decoration: BoxDecoration(borderRadius: BorderRadius.circular(8)),
 
       child: Row(
         children: [
           Text(
             text,
-            style: const TextStyle(color: Colors.white70, fontSize: 13),
+            style: const TextStyle(
+              color: Colors.black,
+              fontSize: 13,
+              fontWeight: FontWeight.bold,
+            ),
           ),
         ],
       ),
@@ -165,7 +174,11 @@ class RecipeCard extends StatelessWidget {
           Expanded(
             child: Text(
               text,
-              style: const TextStyle(color: Colors.white70, fontSize: 14),
+              style: const TextStyle(
+                color: Colors.black,
+                fontSize: 14,
+                fontWeight: FontWeight.bold,
+              ),
             ),
           ),
         ],
