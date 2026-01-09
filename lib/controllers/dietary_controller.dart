@@ -16,6 +16,7 @@ class DietaryController extends ChangeNotifier {
     bool? shellfishAllergy,
     bool? eggAllergy,
   }) {
+    // If a parameter is null, retain the existing value
     _options = DietaryOptions(
       isVegan: isVegan ?? _options.isVegan,
       isVegetarian: isVegetarian ?? _options.isVegetarian,

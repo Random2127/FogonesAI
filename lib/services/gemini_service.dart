@@ -5,7 +5,7 @@ import 'package:http/http.dart' as http;
 class GeminiService {
   static const _model = 'gemini-2.5-flash';
 
-  Future<String> generateRecipe(String prompt) async {
+  Future<Map<String, dynamic>> generateRecipe(String prompt) async {
     // Implementation for calling the Gemini API with the provided prompt
     // and returning the generated recipe as a string.
 
@@ -36,7 +36,8 @@ class GeminiService {
     }
 
     final decoded = jsonDecode(response.body);
-
-    return decoded['candidates'][0]['content']['parts'][0]['text'];
+    final textResponse =
+        decoded['candidates'][0]['content']['parts'][0]['text'];
+    return jsonDecode(textResponse) as Map<String, dynamic>;
   }
 }

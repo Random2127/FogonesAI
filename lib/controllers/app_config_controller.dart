@@ -7,12 +7,12 @@ class AppConfigController extends ChangeNotifier {
   AppConfigController(this._prefs);
   // This would allow to control what should happen in the first run (Language, permissions,tutorial, etc.) Onboarding
   // --- Keys ---
-  static const _firstRunKey = 'is_first_run';
+  static const _onboardingCompleteKey = 'onboardingComplete';
   // Null-aware operator true if the key does not exist
-  bool get isFirstRun => _prefs.getBool(_firstRunKey) ?? true;
+  bool get onboardingComplete => _prefs.getBool(_onboardingCompleteKey) ?? true;
 
-  void markFirstRunComplete() {
-    _prefs.setBool(_firstRunKey, false);
+  void markonboardingCompletee() {
+    _prefs.setBool(_onboardingCompleteKey, false);
     notifyListeners();
   }
 }
