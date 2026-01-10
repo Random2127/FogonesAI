@@ -1,9 +1,38 @@
 import 'package:flutter/material.dart';
 import 'package:fogonesia/models/recipe.dart';
+import 'package:fogonesia/services/db_service.dart';
 
-class RecipeCard extends StatelessWidget {
+class RecipeCard extends StatefulWidget {
   final Recipe recipe;
   const RecipeCard({super.key, required this.recipe});
+
+  @override
+  State<RecipeCard> createState() => _RecipeCardState();
+}
+
+class _RecipeCardState extends State<RecipeCard> {
+  bool isFavourite = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadFavourites();
+  }
+
+  Future<void> _loadFavourites() async {
+    final favourites = await DatabaseService.isFavourite(widget.recipe.title);
+    setState(() => isFavourite = favourites);
+  }
+
+  Future<void> _toggleFavourite() async {
+    if (isFavourite) {
+      await DatabaseService.deleteFavourite(widget.recipe.title);
+    } else {
+      await DatabaseService.insertFavourite(widget.recipe);
+    }
+
+    setState(() => isFavourite = !isFavourite);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -28,7 +57,7 @@ class RecipeCard extends StatelessWidget {
                 children: [
                   Expanded(
                     child: Text(
-                      recipe.title,
+                      widget.recipe.title,
                       style: Theme.of(context).textTheme.headlineSmall
                           ?.copyWith(
                             fontWeight: FontWeight.bold,
@@ -36,14 +65,14 @@ class RecipeCard extends StatelessWidget {
                           ),
                     ),
                   ),
-                  _buildTimeChip(context, recipe.time),
+                  _buildTimeChip(context, widget.recipe.time),
                 ],
               ),
               const SizedBox(height: 12),
 
               // Description
               Text(
-                recipe.description,
+                widget.recipe.description,
                 style: TextStyle(
                   color: Colors.black,
                   fontSize: 15,
@@ -59,7 +88,7 @@ class RecipeCard extends StatelessWidget {
               Wrap(
                 spacing: 8,
                 runSpacing: 8,
-                children: recipe.ingredients
+                children: widget.recipe.ingredients
                     .map((ing) => _buildIngredientTag(ing))
                     .toList(),
               ),
@@ -73,15 +102,18 @@ class RecipeCard extends StatelessWidget {
                 'Instructions',
               ),
               const SizedBox(height: 12),
-              ...recipe.instructions.asMap().entries.map(
+              ...widget.recipe.instructions.asMap().entries.map(
                 (entry) => _buildInstructionStep(entry.key + 1, entry.value),
               ),
 
               Align(
                 alignment: Alignment.centerRight,
                 child: FloatingActionButton(
-                  onPressed: null, //TODO
-                  child: Icon(Icons.favorite),
+                  mini: true,
+                  onPressed: _toggleFavourite,
+                  child: Icon(
+                    isFavourite ? Icons.favorite : Icons.favorite_border,
+                  ),
                 ),
               ),
             ],
