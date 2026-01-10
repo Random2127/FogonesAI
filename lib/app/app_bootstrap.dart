@@ -21,7 +21,7 @@ class AppBootStrap extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => AppConfigController(sharedPrefs)),
         ChangeNotifierProvider(create: (_) => ThemeController(sharedPrefs)),
         ChangeNotifierProvider(create: (_) => ChatController(GeminiService())),
-        ChangeNotifierProvider(create: (_) => DietaryController()),
+        ChangeNotifierProvider(create: (_) => DietaryController(sharedPrefs)),
 
         // Add other providers here as needed
       ],
