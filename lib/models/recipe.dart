@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 class Recipe {
   final String title;
   final String description;
@@ -29,6 +31,30 @@ class Recipe {
       'description': description,
       'ingredients': ingredients,
       'instructions': instructions,
+      'time': time,
+    };
+  }
+
+  static Recipe fromDbMap(Map<String, dynamic> map) {
+    return Recipe(
+      title: map['title'],
+      description: map['description'],
+      ingredients: List<String>.from(jsonDecode(map['ingredients'])),
+      instructions: List<String>.from(jsonDecode(map['instructions'])),
+      time: map['time'],
+    );
+  }
+}
+
+// I could have added this to the class but extension is cleaner
+// Avoid persistence and logic from mixing
+extension RecipeDbMapper on Recipe {
+  Map<String, dynamic> toDbMap() {
+    return {
+      'title': title,
+      'description': description,
+      'ingredients': jsonEncode(ingredients),
+      'instructions': jsonEncode(instructions),
       'time': time,
     };
   }

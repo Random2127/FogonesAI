@@ -1,12 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:fogonesia/models/dietary_options.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class DietaryController extends ChangeNotifier {
-  DietaryOptions _options = DietaryOptions();
-
+  final SharedPreferences _prefs;
+  late DietaryOptions _options;
   DietaryOptions get options => _options;
 
-  void updateOption({
+  DietaryController(this._prefs) {
+    _options = DietaryOptions.fromPrefs(_prefs);
+  }
+
+  Future<void> updateOption({
     bool? isVegan,
     bool? isVegetarian,
     bool? isGlutenFree,
@@ -15,7 +20,7 @@ class DietaryController extends ChangeNotifier {
     bool? fishAllergy,
     bool? shellfishAllergy,
     bool? eggAllergy,
-  }) {
+  }) async {
     // If a parameter is null, retain the existing value
     _options = DietaryOptions(
       isVegan: isVegan ?? _options.isVegan,
@@ -27,11 +32,13 @@ class DietaryController extends ChangeNotifier {
       shellfishAllergy: shellfishAllergy ?? _options.shellfishAllergy,
       eggAllergy: eggAllergy ?? _options.eggAllergy,
     );
+    await _options.saveToPrefs(_prefs);
     notifyListeners();
   }
 
-  void resetOption() {
+  void resetOption() async {
     _options = DietaryOptions();
+    _options.saveToPrefs(_prefs);
     notifyListeners();
   }
 }

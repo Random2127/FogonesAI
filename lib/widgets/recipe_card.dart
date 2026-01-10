@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:fogonesia/controllers/recipe_controller.dart';
 import 'package:fogonesia/models/recipe.dart';
+import 'package:provider/provider.dart';
 
 class RecipeCard extends StatelessWidget {
   final Recipe recipe;
@@ -7,10 +9,12 @@ class RecipeCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final recipeController = context.watch<RecipeController>();
+    final isFavourite = recipeController.isFavourite(recipe);
+
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       decoration: BoxDecoration(
-        // Semi-transparent background for that "glass" effect
         color: Colors.blueGrey,
         borderRadius: BorderRadius.circular(24),
         border: Border.all(color: Colors.purple),
@@ -44,7 +48,7 @@ class RecipeCard extends StatelessWidget {
               // Description
               Text(
                 recipe.description,
-                style: TextStyle(
+                style: const TextStyle(
                   color: Colors.black,
                   fontSize: 15,
                   height: 1.4,
@@ -53,20 +57,18 @@ class RecipeCard extends StatelessWidget {
 
               const Divider(height: 32, color: Colors.white24),
 
-              // Ingredients Section
+              // Ingredients
               _buildSectionTitle(context, Icons.restaurant_menu, 'Ingredients'),
               const SizedBox(height: 8),
               Wrap(
                 spacing: 8,
                 runSpacing: 8,
-                children: recipe.ingredients
-                    .map((ing) => _buildIngredientTag(ing))
-                    .toList(),
+                children: recipe.ingredients.map(_buildIngredientTag).toList(),
               ),
 
               const SizedBox(height: 24),
 
-              // Instructions Section
+              // Instructions
               _buildSectionTitle(
                 context,
                 Icons.format_list_numbered,
@@ -77,11 +79,15 @@ class RecipeCard extends StatelessWidget {
                 (entry) => _buildInstructionStep(entry.key + 1, entry.value),
               ),
 
+              // Favourite Button
               Align(
                 alignment: Alignment.centerRight,
                 child: FloatingActionButton(
-                  onPressed: null, //TODO
-                  child: Icon(Icons.favorite),
+                  mini: true,
+                  onPressed: () => recipeController.toggleFavourite(recipe),
+                  child: Icon(
+                    isFavourite ? Icons.favorite : Icons.favorite_border,
+                  ),
                 ),
               ),
             ],
@@ -91,7 +97,6 @@ class RecipeCard extends StatelessWidget {
     );
   }
 
-  // Helper Widget for the Time Badge
   Widget _buildTimeChip(BuildContext context, int time) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
@@ -115,7 +120,6 @@ class RecipeCard extends StatelessWidget {
     );
   }
 
-  // Helper Widget for Section Headers
   Widget _buildSectionTitle(BuildContext context, IconData icon, String title) {
     return Row(
       children: [
@@ -134,30 +138,21 @@ class RecipeCard extends StatelessWidget {
     );
   }
 
-  // Helper for Ingredient Tags
   Widget _buildIngredientTag(String text) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
       decoration: BoxDecoration(borderRadius: BorderRadius.circular(8)),
-
-      child: Row(
-        children: [
-          Expanded(
-            child: Text(
-              text,
-              style: const TextStyle(
-                color: Colors.black,
-                fontSize: 13,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-          ),
-        ],
+      child: Text(
+        text,
+        style: const TextStyle(
+          color: Colors.black,
+          fontSize: 13,
+          fontWeight: FontWeight.bold,
+        ),
       ),
     );
   }
 
-  // Helper for Instruction Steps
   Widget _buildInstructionStep(int number, String text) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 12.0),
