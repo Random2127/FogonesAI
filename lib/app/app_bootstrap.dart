@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:fogonesia/controllers/chat_controller.dart';
 import 'package:fogonesia/controllers/dietary_controller.dart';
+import 'package:fogonesia/controllers/recipe_controller.dart';
 import 'package:fogonesia/controllers/theme_controller.dart';
 import 'package:fogonesia/main.dart';
 import 'package:fogonesia/controllers/app_config_controller.dart';
@@ -22,6 +23,7 @@ class AppBootStrap extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => ThemeController(sharedPrefs)),
         ChangeNotifierProvider(create: (_) => ChatController(GeminiService())),
         ChangeNotifierProvider(create: (_) => DietaryController(sharedPrefs)),
+        ChangeNotifierProvider(create: (_) => RecipeController(sharedPrefs)),
 
         // Add other providers here as needed
       ],

@@ -1,45 +1,20 @@
 import 'package:flutter/material.dart';
+import 'package:fogonesia/controllers/recipe_controller.dart';
 import 'package:fogonesia/models/recipe.dart';
-import 'package:fogonesia/services/db_service.dart';
+import 'package:provider/provider.dart';
 
-class RecipeCard extends StatefulWidget {
+class RecipeCard extends StatelessWidget {
   final Recipe recipe;
   const RecipeCard({super.key, required this.recipe});
 
   @override
-  State<RecipeCard> createState() => _RecipeCardState();
-}
-
-class _RecipeCardState extends State<RecipeCard> {
-  bool isFavourite = false;
-
-  @override
-  void initState() {
-    super.initState();
-    _loadFavourites();
-  }
-
-  Future<void> _loadFavourites() async {
-    final favourites = await DatabaseService.isFavourite(widget.recipe.title);
-    setState(() => isFavourite = favourites);
-  }
-
-  Future<void> _toggleFavourite() async {
-    if (isFavourite) {
-      await DatabaseService.deleteFavourite(widget.recipe.title);
-    } else {
-      await DatabaseService.insertFavourite(widget.recipe);
-    }
-
-    setState(() => isFavourite = !isFavourite);
-  }
-
-  @override
   Widget build(BuildContext context) {
+    final recipeController = context.watch<RecipeController>();
+    final isFavourite = recipeController.isFavourite(recipe);
+
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       decoration: BoxDecoration(
-        // Semi-transparent background for that "glass" effect
         color: Colors.blueGrey,
         borderRadius: BorderRadius.circular(24),
         border: Border.all(color: Colors.purple),
@@ -57,7 +32,7 @@ class _RecipeCardState extends State<RecipeCard> {
                 children: [
                   Expanded(
                     child: Text(
-                      widget.recipe.title,
+                      recipe.title,
                       style: Theme.of(context).textTheme.headlineSmall
                           ?.copyWith(
                             fontWeight: FontWeight.bold,
@@ -65,15 +40,15 @@ class _RecipeCardState extends State<RecipeCard> {
                           ),
                     ),
                   ),
-                  _buildTimeChip(context, widget.recipe.time),
+                  _buildTimeChip(context, recipe.time),
                 ],
               ),
               const SizedBox(height: 12),
 
               // Description
               Text(
-                widget.recipe.description,
-                style: TextStyle(
+                recipe.description,
+                style: const TextStyle(
                   color: Colors.black,
                   fontSize: 15,
                   height: 1.4,
@@ -82,35 +57,34 @@ class _RecipeCardState extends State<RecipeCard> {
 
               const Divider(height: 32, color: Colors.white24),
 
-              // Ingredients Section
+              // Ingredients
               _buildSectionTitle(context, Icons.restaurant_menu, 'Ingredients'),
               const SizedBox(height: 8),
               Wrap(
                 spacing: 8,
                 runSpacing: 8,
-                children: widget.recipe.ingredients
-                    .map((ing) => _buildIngredientTag(ing))
-                    .toList(),
+                children: recipe.ingredients.map(_buildIngredientTag).toList(),
               ),
 
               const SizedBox(height: 24),
 
-              // Instructions Section
+              // Instructions
               _buildSectionTitle(
                 context,
                 Icons.format_list_numbered,
                 'Instructions',
               ),
               const SizedBox(height: 12),
-              ...widget.recipe.instructions.asMap().entries.map(
+              ...recipe.instructions.asMap().entries.map(
                 (entry) => _buildInstructionStep(entry.key + 1, entry.value),
               ),
 
+              // Favourite Button
               Align(
                 alignment: Alignment.centerRight,
                 child: FloatingActionButton(
                   mini: true,
-                  onPressed: _toggleFavourite,
+                  onPressed: () => recipeController.toggleFavourite(recipe),
                   child: Icon(
                     isFavourite ? Icons.favorite : Icons.favorite_border,
                   ),
@@ -123,7 +97,6 @@ class _RecipeCardState extends State<RecipeCard> {
     );
   }
 
-  // Helper Widget for the Time Badge
   Widget _buildTimeChip(BuildContext context, int time) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
@@ -147,7 +120,6 @@ class _RecipeCardState extends State<RecipeCard> {
     );
   }
 
-  // Helper Widget for Section Headers
   Widget _buildSectionTitle(BuildContext context, IconData icon, String title) {
     return Row(
       children: [
@@ -166,30 +138,21 @@ class _RecipeCardState extends State<RecipeCard> {
     );
   }
 
-  // Helper for Ingredient Tags
   Widget _buildIngredientTag(String text) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
       decoration: BoxDecoration(borderRadius: BorderRadius.circular(8)),
-
-      child: Row(
-        children: [
-          Expanded(
-            child: Text(
-              text,
-              style: const TextStyle(
-                color: Colors.black,
-                fontSize: 13,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-          ),
-        ],
+      child: Text(
+        text,
+        style: const TextStyle(
+          color: Colors.black,
+          fontSize: 13,
+          fontWeight: FontWeight.bold,
+        ),
       ),
     );
   }
 
-  // Helper for Instruction Steps
   Widget _buildInstructionStep(int number, String text) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 12.0),
