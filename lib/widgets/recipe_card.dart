@@ -80,7 +80,7 @@ class RecipeCard extends StatelessWidget {
               Align(
                 alignment: Alignment.centerRight,
                 child: FloatingActionButton(
-                  onPressed: null,
+                  onPressed: null, //TODO
                   child: Icon(Icons.favorite),
                 ),
               ),
@@ -142,12 +142,14 @@ class RecipeCard extends StatelessWidget {
 
       child: Row(
         children: [
-          Text(
-            text,
-            style: const TextStyle(
-              color: Colors.black,
-              fontSize: 13,
-              fontWeight: FontWeight.bold,
+          Expanded(
+            child: Text(
+              text,
+              style: const TextStyle(
+                color: Colors.black,
+                fontSize: 13,
+                fontWeight: FontWeight.bold,
+              ),
             ),
           ),
         ],
