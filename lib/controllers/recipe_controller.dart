@@ -7,7 +7,10 @@ class RecipeController extends ChangeNotifier {
   final SharedPreferences _prefs;
 
   List<Recipe> _favourites = [];
-  List<Recipe> get favourites => _favourites;
+  // List for SearchBar filtering
+  List<Recipe> _filteredFavourites = [];
+
+  List<Recipe> get favourites => _filteredFavourites;
 
   RecipeController(this._prefs) {
     loadFavourites();
@@ -15,9 +18,11 @@ class RecipeController extends ChangeNotifier {
 
   Future<void> loadFavourites() async {
     _favourites = await DatabaseService.getFavourites();
+    _filteredFavourites = _favourites;
     notifyListeners();
   }
 
+  //
   Future<void> toggleFavourite(Recipe recipe) async {
     final isFav = _favourites.any((r) => r.title == recipe.title);
 
@@ -49,6 +54,21 @@ class RecipeController extends ChangeNotifier {
     // Update in-memory list
     _favourites[index] = updatedRecipe;
 
+    notifyListeners();
+  }
+
+  void filterRecipes(String value) {
+    if (value.isEmpty) {
+      _filteredFavourites = _favourites;
+    } else {
+      _filteredFavourites = _favourites
+          .where(
+            (recipe) =>
+                recipe.title.toLowerCase().contains(value.toLowerCase()) ||
+                recipe.description.toLowerCase().contains(value.toLowerCase()),
+          )
+          .toList();
+    }
     notifyListeners();
   }
 }
