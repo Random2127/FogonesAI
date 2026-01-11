@@ -40,10 +40,10 @@ class _HomePageState extends State<HomePage> {
         },
         items: const [
           BottomNavigationBarItem(icon: Icon(Icons.chat), label: 'Chat'),
-          BottomNavigationBarItem(icon: Icon(Icons.receipt), label: 'Receta'),
+          BottomNavigationBarItem(icon: Icon(Icons.receipt), label: 'Recipes'),
           BottomNavigationBarItem(
             icon: Icon(Icons.settings),
-            label: 'Parámetros',
+            label: 'Dietary Prefs',
           ),
         ],
       ),
