@@ -20,9 +20,33 @@ class RecipesScreen extends StatelessWidget {
                 itemCount: recipes.length,
                 itemBuilder: (context, index) {
                   final recipe = recipes[index];
-                  return ListTile(
-                    title: Text(recipe.title),
-                    subtitle: Text(recipe.description),
+                  // card for each recipe
+                  return Card(
+                    elevation: 2,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    margin: const EdgeInsets.symmetric(vertical: 6),
+                    child: ListTile(
+                      contentPadding: const EdgeInsets.all(12),
+                      title: Text(
+                        recipe.title,
+                        style: Theme.of(context).textTheme.titleMedium,
+                      ),
+                      subtitle: Text(
+                        recipe.description,
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                      trailing: const Icon(Icons.chevron_right),
+                      onTap: () {
+                        Navigator.pushNamed(
+                          context,
+                          '/editRecipe',
+                          arguments: recipe,
+                        );
+                      },
+                    ),
                   );
                 },
               ),

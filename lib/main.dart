@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:fogonesia/controllers/theme_controller.dart';
+import 'package:fogonesia/models/recipe.dart';
+import 'package:fogonesia/screens/edit_recipe_screen.dart';
 import 'package:fogonesia/theme/app_theme.dart' as app_theme;
 import 'package:fogonesia/utils/routes.dart';
 import 'package:provider/provider.dart';
@@ -29,6 +31,19 @@ class MyApp extends StatelessWidget {
       themeMode: theme.themeMode,
       initialRoute: Routes.home,
       routes: Routes.routes,
+
+      // This may not be the cleanest but it gets the job done
+      // Only way I could figure out to pass arguments to routes
+      onGenerateRoute: (settings) {
+        if (settings.name == Routes.editRecipe) {
+          final recipe = settings.arguments as Recipe;
+
+          return MaterialPageRoute(
+            builder: (_) => EditRecipeScreen(recipe: recipe),
+          );
+        }
+        return null;
+      },
     );
   }
 }
