@@ -71,4 +71,15 @@ class DatabaseService {
     );
     return result.isNotEmpty;
   }
+
+  static Future<void> updateFavourite(Recipe recipe) async {
+    final db = await database;
+
+    await db.update(
+      'favourites',
+      recipe.toDbMap(), // reuse mapper
+      where: 'title = ?',
+      whereArgs: [recipe.title],
+    );
+  }
 }

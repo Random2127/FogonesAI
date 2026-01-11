@@ -35,4 +35,20 @@ class RecipeController extends ChangeNotifier {
   bool isFavourite(Recipe recipe) {
     return _favourites.any((r) => r.title == recipe.title);
   }
+
+  Future<void> updateRecipe(Recipe updatedRecipe) async {
+    final index = _favourites.indexWhere((r) => r.title == updatedRecipe.title);
+
+    if (index == -1) {
+      return; // recipe not found, safety guard
+    }
+
+    // Update database first
+    await DatabaseService.updateFavourite(updatedRecipe);
+
+    // Update in-memory list
+    _favourites[index] = updatedRecipe;
+
+    notifyListeners();
+  }
 }

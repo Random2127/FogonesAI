@@ -15,6 +15,23 @@ class Recipe {
     required this.time,
   });
 
+  // This is needed to edit a recipe
+  Recipe copyWith({
+    String? title,
+    String? description,
+    List<String>? ingredients,
+    List<String>? instructions,
+    int? time,
+  }) {
+    return Recipe(
+      title: title ?? this.title,
+      description: description ?? this.description,
+      ingredients: ingredients ?? this.ingredients,
+      instructions: instructions ?? this.instructions,
+      time: time ?? this.time,
+    );
+  }
+
   factory Recipe.fromJson(Map<String, dynamic> json) {
     return Recipe(
       title: json['title'],
