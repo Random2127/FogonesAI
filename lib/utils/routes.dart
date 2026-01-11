@@ -14,6 +14,7 @@ class Routes {
   static const String recipes = '/recipes';
   static const String dietary = '/dietary';
   static const String editRecipe = '/editRecipe';
+  static const String recipeDetails = '/recipeDetails';
 
   static Map<String, WidgetBuilder> routes = {
     home: (context) => const HomePage(),

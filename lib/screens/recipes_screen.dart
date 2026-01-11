@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:fogonesia/utils/routes.dart';
 import 'package:provider/provider.dart';
 import 'package:fogonesia/controllers/recipe_controller.dart';
 
@@ -42,8 +43,8 @@ class RecipesScreen extends StatelessWidget {
                       onTap: () {
                         Navigator.pushNamed(
                           context,
-                          '/editRecipe',
-                          arguments: recipe,
+                          Routes.recipeDetails,
+                          arguments: recipe.title,
                         );
                       },
                     ),
