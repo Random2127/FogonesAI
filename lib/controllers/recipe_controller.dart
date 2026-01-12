@@ -4,6 +4,8 @@ import 'package:fogonesia/services/database_service.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class RecipeController extends ChangeNotifier {
+  // This is a sore eye but needed for DatabaseService initialization
+  //ignore: unused_field
   final SharedPreferences _prefs;
 
   List<Recipe> _favourites = [];
