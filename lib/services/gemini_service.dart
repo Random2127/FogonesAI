@@ -10,10 +10,10 @@ class GeminiService {
     // and returning the generated recipe as a string.
 
     // old code for dotenv usage
-    //final apiKey = dotenv.env['GEMINI_API_KEY'];
-    //if (apiKey == null) {
+    // final apiKey = dotenv.env['GEMINI_API_KEY'];
+    // if (apiKey == null) {
     //  throw Exception('GEMINI_API_KEY not found');
-    //}
+    // }
 
     final apiKey = Api.apiKey();
     final uri = Uri.parse(
