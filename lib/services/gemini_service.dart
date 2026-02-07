@@ -1,6 +1,6 @@
 import 'dart:convert';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 class GeminiService {
   static const _model = 'gemini-2.5-flash';
@@ -9,11 +9,13 @@ class GeminiService {
     // Implementation for calling the Gemini API with the provided prompt
     // and returning the generated recipe as a string.
 
-    final apiKey = dotenv.env['GEMINI_API_KEY'];
-    if (apiKey == null) {
-      throw Exception('GEMINI_API_KEY not found');
-    }
+    // old code for dotenv usage
+    // final apiKey = dotenv.env['GEMINI_API_KEY'];
+    // if (apiKey == null) {
+    //  throw Exception('GEMINI_API_KEY not found');
+    // }
 
+    final apiKey = dotenv.env['GEMINI_API_KEY'];
     final uri = Uri.parse(
       'https://generativelanguage.googleapis.com/v1beta/models/$_model:generateContent?key=$apiKey',
     );
@@ -41,3 +43,4 @@ class GeminiService {
     return jsonDecode(textResponse) as Map<String, dynamic>;
   }
 }
+
