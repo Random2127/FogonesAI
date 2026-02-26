@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:fogonesia/utils/chat_message.dart';
-import 'package:fogonesia/widgets/recipe_card.dart';
+import 'package:fogonesia/features/recipe/widgets/recipe_card.dart';
+import 'package:fogonesia/shared/chat_message.dart';
 
 class ChatBubble extends StatelessWidget {
   final ChatMessage message;
@@ -25,12 +25,11 @@ class ChatBubble extends StatelessWidget {
 
   Color _bubbleColour(bool isUser) {
     if (message.type == MessageType.recipe) {
-      return Colors
-          .transparent; // No background for recipe cards so they style somewhere else
+      return Colors.transparent;
     }
     return isUser
         ? const Color.fromARGB(255, 14, 64, 150)
-        : _bubbleColour(isUser);
+        : const Color(0xFFE0E0E0);
   }
 
   Widget _buildContent(BuildContext context) {

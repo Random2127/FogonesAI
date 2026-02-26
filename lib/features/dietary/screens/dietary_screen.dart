@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:fogonesia/controllers/dietary_controller.dart';
-import 'package:fogonesia/widgets/components/dietary_tile.dart';
+import 'package:fogonesia/features/dietary/controller/dietary_controller.dart';
+import 'package:fogonesia/features/dietary/widgets/dietary_tile.dart';
 import 'package:provider/provider.dart';
 
 class DietaryScreen extends StatefulWidget {
@@ -17,7 +17,7 @@ class _DietaryScreenState extends State<DietaryScreen> {
 
     return Scaffold(
       body: Padding(
-        padding: EdgeInsetsGeometry.all(16),
+        padding: const EdgeInsets.all(16),
         child: ListView(
           children: [
             DietaryTile(

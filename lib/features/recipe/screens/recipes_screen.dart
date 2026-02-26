@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:fogonesia/utils/routes.dart';
+import 'package:fogonesia/features/recipe/controller/recipe_controller.dart';
+import 'package:fogonesia/shared/routes.dart';
 import 'package:provider/provider.dart';
-import 'package:fogonesia/controllers/recipe_controller.dart';
 
 class RecipesScreen extends StatelessWidget {
   const RecipesScreen({super.key});
@@ -22,7 +22,6 @@ class RecipesScreen extends StatelessWidget {
               hintStyle: WidgetStateProperty.all(
                 const TextStyle(color: Colors.grey),
               ),
-
               onChanged: (value) {
                 recipeController.filterRecipes(value);
               },
@@ -37,7 +36,6 @@ class RecipesScreen extends StatelessWidget {
                       itemCount: recipes.length,
                       itemBuilder: (context, index) {
                         final recipe = recipes[index];
-                        // card for each recipe
                         return Card(
                           elevation: 2,
                           shape: RoundedRectangleBorder(

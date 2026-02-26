@@ -1,4 +1,4 @@
-import 'package:fogonesia/models/dietary_options.dart';
+import 'package:fogonesia/features/dietary/model/dietary_options.dart';
 
 // Build the prompt for Gemini API
 String buildRecipePrompt({

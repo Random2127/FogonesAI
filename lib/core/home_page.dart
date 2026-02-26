@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:fogonesia/screens/chat_screen.dart';
-import 'package:fogonesia/screens/dietary_screen.dart';
-import 'package:fogonesia/screens/recipes_screen.dart';
-import 'package:fogonesia/widgets/custom_drawer.dart';
+import 'package:fogonesia/features/chat/screens/chat_screen.dart';
+import 'package:fogonesia/features/dietary/screens/dietary_screen.dart';
+import 'package:fogonesia/features/recipe/screens/recipes_screen.dart';
+import 'package:fogonesia/shared/widgets/custom_drawer.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -18,6 +18,7 @@ class _HomePageState extends State<HomePage> {
     const RecipesScreen(),
     const DietaryScreen(),
   ];
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -26,8 +27,7 @@ class _HomePageState extends State<HomePage> {
         centerTitle: true,
         backgroundColor: Theme.of(context).colorScheme.primaryContainer,
       ),
-      drawer: CustomDrawer(),
-
+      drawer: const CustomDrawer(),
       body: IndexedStack(index: _selectedIndex, children: _screens),
       bottomNavigationBar: BottomNavigationBar(
         backgroundColor: Theme.of(context).colorScheme.primaryContainer,

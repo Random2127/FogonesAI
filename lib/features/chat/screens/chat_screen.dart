@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:fogonesia/controllers/chat_controller.dart';
-import 'package:fogonesia/controllers/dietary_controller.dart';
-import 'package:fogonesia/widgets/components/chat_bubble.dart';
-import 'package:fogonesia/widgets/components/input_bar.dart';
+import 'package:fogonesia/features/chat/controller/chat_controller.dart';
+import 'package:fogonesia/features/dietary/controller/dietary_controller.dart';
+import 'package:fogonesia/shared/widgets/chat_bubble.dart';
+import 'package:fogonesia/shared/widgets/input_bar.dart';
 import 'package:provider/provider.dart';
 
 class ChatScreen extends StatefulWidget {

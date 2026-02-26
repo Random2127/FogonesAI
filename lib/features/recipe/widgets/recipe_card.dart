@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:fogonesia/controllers/recipe_controller.dart';
-import 'package:fogonesia/models/recipe.dart';
+import 'package:fogonesia/features/recipe/controller/recipe_controller.dart';
+import 'package:fogonesia/features/recipe/model/recipe.dart';
 import 'package:provider/provider.dart';
 
 class RecipeCard extends StatelessWidget {
@@ -26,15 +26,13 @@ class RecipeCard extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Header Row: Title + Time Chip
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Expanded(
                     child: Text(
                       recipe.title,
-                      style: Theme.of(context).textTheme.headlineSmall
-                          ?.copyWith(
+                      style: Theme.of(context).textTheme.headlineSmall?.copyWith(
                             fontWeight: FontWeight.bold,
                             color: Colors.white,
                           ),
@@ -44,8 +42,6 @@ class RecipeCard extends StatelessWidget {
                 ],
               ),
               const SizedBox(height: 12),
-
-              // Description
               Text(
                 recipe.description,
                 style: const TextStyle(
@@ -54,10 +50,7 @@ class RecipeCard extends StatelessWidget {
                   height: 1.4,
                 ),
               ),
-
               const Divider(height: 32, color: Colors.white24),
-
-              // Ingredients
               _buildSectionTitle(context, Icons.restaurant_menu, 'Ingredients'),
               const SizedBox(height: 8),
               Wrap(
@@ -65,10 +58,7 @@ class RecipeCard extends StatelessWidget {
                 runSpacing: 8,
                 children: recipe.ingredients.map(_buildIngredientTag).toList(),
               ),
-
               const SizedBox(height: 24),
-
-              // Instructions
               _buildSectionTitle(
                 context,
                 Icons.format_list_numbered,
@@ -78,8 +68,6 @@ class RecipeCard extends StatelessWidget {
               ...recipe.instructions.asMap().entries.map(
                 (entry) => _buildInstructionStep(entry.key + 1, entry.value),
               ),
-
-              // Favourite Button
               Align(
                 alignment: Alignment.centerRight,
                 child: FloatingActionButton(
@@ -120,7 +108,11 @@ class RecipeCard extends StatelessWidget {
     );
   }
 
-  Widget _buildSectionTitle(BuildContext context, IconData icon, String title) {
+  Widget _buildSectionTitle(
+    BuildContext context,
+    IconData icon,
+    String title,
+  ) {
     return Row(
       children: [
         Icon(icon, size: 18, color: Colors.orangeAccent),

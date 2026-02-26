@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:fogonesia/controllers/theme_controller.dart';
+import 'package:fogonesia/core/settings/theme_controller.dart';
 import 'package:provider/provider.dart';
 
 class CustomDrawer extends StatelessWidget {
@@ -44,7 +44,6 @@ class CustomDrawer extends StatelessWidget {
                 themeController.setThemeMode(
                   value ? ThemeMode.dark : ThemeMode.light,
                 );
-                //Navigator.pop(context);
               },
             ),
           ),

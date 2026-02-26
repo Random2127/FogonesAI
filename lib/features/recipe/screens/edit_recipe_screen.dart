@@ -1,7 +1,7 @@
 // edit saved recipe
 import 'package:flutter/material.dart';
-import 'package:fogonesia/controllers/recipe_controller.dart';
-import 'package:fogonesia/models/recipe.dart';
+import 'package:fogonesia/features/recipe/controller/recipe_controller.dart';
+import 'package:fogonesia/features/recipe/model/recipe.dart';
 import 'package:provider/provider.dart';
 
 class EditRecipeScreen extends StatefulWidget {
@@ -49,7 +49,12 @@ class _EditRecipeScreenState extends State<EditRecipeScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Text('Edit ${widget.recipe.title}'),
-        actions: [IconButton(onPressed: _saveRecipe, icon: Icon(Icons.save))],
+        actions: [
+          IconButton(
+            onPressed: _saveRecipe,
+            icon: const Icon(Icons.save),
+          ),
+        ],
       ),
       body: Padding(
         padding: const EdgeInsets.all(16),

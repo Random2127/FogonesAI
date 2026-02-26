@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:fogonesia/models/dietary_options.dart';
+import 'package:fogonesia/features/dietary/model/dietary_options.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class DietaryController extends ChangeNotifier {
@@ -21,7 +21,6 @@ class DietaryController extends ChangeNotifier {
     bool? shellfishAllergy,
     bool? eggAllergy,
   }) async {
-    // If a parameter is null, retain the existing value
     _options = DietaryOptions(
       isVegan: isVegan ?? _options.isVegan,
       isVegetarian: isVegetarian ?? _options.isVegetarian,

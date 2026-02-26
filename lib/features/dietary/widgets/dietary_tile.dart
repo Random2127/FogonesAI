@@ -17,8 +17,7 @@ class DietaryTile extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8.0),
       child: ListTile(
-        title: Text(label, style: TextStyle(fontSize: 18.0)),
-
+        title: Text(label, style: const TextStyle(fontSize: 18.0)),
         trailing: Switch(value: value, onChanged: onChanged),
       ),
     );

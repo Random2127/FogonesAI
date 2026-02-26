@@ -1,5 +1,5 @@
 // SQL helper for CRUD operations
-import 'package:fogonesia/models/recipe.dart';
+import 'package:fogonesia/features/recipe/model/recipe.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
 

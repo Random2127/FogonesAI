@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:fogonesia/screens/chat_screen.dart';
-import 'package:fogonesia/screens/dietary_screen.dart';
-import 'package:fogonesia/screens/home_page.dart';
-import 'package:fogonesia/screens/login.dart';
-import 'package:fogonesia/screens/recipes_screen.dart';
-import 'package:fogonesia/screens/register.dart';
+import 'package:fogonesia/core/home_page.dart';
+import 'package:fogonesia/features/auth/screens/login.dart';
+import 'package:fogonesia/features/auth/screens/register.dart';
+import 'package:fogonesia/features/chat/screens/chat_screen.dart';
+import 'package:fogonesia/features/dietary/screens/dietary_screen.dart';
+import 'package:fogonesia/features/recipe/screens/recipes_screen.dart';
 
 class Routes {
   static const String home = '/home';

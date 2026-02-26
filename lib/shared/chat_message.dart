@@ -1,10 +1,9 @@
-import 'package:fogonesia/models/recipe.dart';
+import 'package:fogonesia/features/recipe/model/recipe.dart';
 
 enum MessageSender { user, ai }
 
 enum MessageType { text, recipe }
 
-// maybe add timestamp
 class ChatMessage {
   final String? text;
   final Recipe? recipe;

@@ -1,18 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
-import 'package:fogonesia/controllers/theme_controller.dart';
-import 'package:fogonesia/models/recipe.dart';
-import 'package:fogonesia/screens/edit_recipe_screen.dart';
-import 'package:fogonesia/screens/recipe_details_screen.dart';
-import 'package:fogonesia/theme/app_theme.dart' as app_theme;
-import 'package:fogonesia/utils/routes.dart';
+import 'package:fogonesia/app/app_bootstrap.dart';
+import 'package:fogonesia/core/settings/theme_controller.dart';
+import 'package:fogonesia/core/theme/app_theme.dart' as app_theme;
+import 'package:fogonesia/features/recipe/model/recipe.dart';
+import 'package:fogonesia/features/recipe/screens/edit_recipe_screen.dart';
+import 'package:fogonesia/features/recipe/screens/recipe_details_screen.dart';
+import 'package:fogonesia/shared/routes.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:fogonesia/app/app_bootstrap.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  // API key
   await dotenv.load(fileName: ".env");
   final sharedPrefs = await SharedPreferences.getInstance();
 
@@ -32,9 +31,6 @@ class MyApp extends StatelessWidget {
       themeMode: theme.themeMode,
       initialRoute: Routes.home,
       routes: Routes.routes,
-
-      // This may not be the cleanest but it gets the job done
-      // Only way I could figure out to pass arguments to routes
       onGenerateRoute: (settings) {
         switch (settings.name) {
           case Routes.recipeDetails:
@@ -42,7 +38,6 @@ class MyApp extends StatelessWidget {
             return MaterialPageRoute(
               builder: (_) => RecipeDetailsScreen(recipeTitle: title),
             );
-
           case Routes.editRecipe:
             final recipe = settings.arguments as Recipe;
             return MaterialPageRoute(

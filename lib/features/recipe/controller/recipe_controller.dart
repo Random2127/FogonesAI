@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:fogonesia/models/recipe.dart';
+import 'package:fogonesia/features/recipe/model/recipe.dart';
 import 'package:fogonesia/services/database_service.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -24,7 +24,6 @@ class RecipeController extends ChangeNotifier {
     notifyListeners();
   }
 
-  //
   Future<void> toggleFavourite(Recipe recipe) async {
     final isFav = _favourites.any((r) => r.title == recipe.title);
 

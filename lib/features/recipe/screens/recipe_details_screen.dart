@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:fogonesia/controllers/recipe_controller.dart';
-import 'package:fogonesia/utils/routes.dart';
+import 'package:fogonesia/features/recipe/controller/recipe_controller.dart';
+import 'package:fogonesia/shared/routes.dart';
 import 'package:provider/provider.dart';
 
 class RecipeDetailsScreen extends StatelessWidget {
@@ -29,7 +29,6 @@ class RecipeDetailsScreen extends StatelessWidget {
           ),
         ],
       ),
-      // I could extract body but for now it's ok
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16),
         child: Column(
