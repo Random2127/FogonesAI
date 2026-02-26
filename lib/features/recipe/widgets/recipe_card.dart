@@ -1,16 +1,20 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:fogonesia/features/recipe/controller/recipe_controller.dart';
 import 'package:fogonesia/features/recipe/model/recipe.dart';
-import 'package:provider/provider.dart';
 
-class RecipeCard extends StatelessWidget {
+class RecipeCard extends ConsumerWidget {
   final Recipe recipe;
   const RecipeCard({super.key, required this.recipe});
 
   @override
-  Widget build(BuildContext context) {
-    final recipeController = context.watch<RecipeController>();
-    final isFavourite = recipeController.isFavourite(recipe);
+  Widget build(BuildContext context, WidgetRef ref) {
+    final recipeController = ref.read(recipeControllerProvider.notifier);
+    final isFavourite = ref.watch(recipeControllerProvider).whenOrNull(
+              data: (recipes) =>
+                  recipes.any((r) => r.title == recipe.title),
+            ) ??
+        false;
 
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),

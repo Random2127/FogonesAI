@@ -1,18 +1,17 @@
-// edit saved recipe
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:fogonesia/features/recipe/controller/recipe_controller.dart';
 import 'package:fogonesia/features/recipe/model/recipe.dart';
-import 'package:provider/provider.dart';
 
-class EditRecipeScreen extends StatefulWidget {
+class EditRecipeScreen extends ConsumerStatefulWidget {
   final Recipe recipe;
   const EditRecipeScreen({super.key, required this.recipe});
 
   @override
-  State<EditRecipeScreen> createState() => _EditRecipeScreenState();
+  ConsumerState<EditRecipeScreen> createState() => _EditRecipeScreenState();
 }
 
-class _EditRecipeScreenState extends State<EditRecipeScreen> {
+class _EditRecipeScreenState extends ConsumerState<EditRecipeScreen> {
   late final TextEditingController _titleController;
   late final TextEditingController _descriptionController;
   late final TextEditingController _ingredientsController;
@@ -122,7 +121,7 @@ class _EditRecipeScreenState extends State<EditRecipeScreen> {
       time: int.tryParse(_timeController.text) ?? widget.recipe.time,
     );
 
-    context.read<RecipeController>().updateRecipe(updatedRecipe);
+    ref.read(recipeControllerProvider.notifier).updateRecipe(updatedRecipe);
 
     Navigator.pop(context);
   }

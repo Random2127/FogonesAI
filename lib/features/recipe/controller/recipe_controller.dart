@@ -1,77 +1,64 @@
-import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:fogonesia/features/recipe/model/recipe.dart';
 import 'package:fogonesia/services/database_service.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
-class RecipeController extends ChangeNotifier {
-  // This is a sore eye but needed for DatabaseService initialization
-  //ignore: unused_field
-  final SharedPreferences _prefs;
+final recipeControllerProvider =
+    AsyncNotifierProvider<RecipeController, List<Recipe>>(RecipeController.new);
 
-  List<Recipe> _favourites = [];
-  // List for SearchBar filtering
-  List<Recipe> _filteredFavourites = [];
+class RecipeController extends AsyncNotifier<List<Recipe>> {
+  List<Recipe> _allFavourites = [];
+  String _filterQuery = '';
 
-  List<Recipe> get favourites => _filteredFavourites;
-
-  RecipeController(this._prefs) {
-    loadFavourites();
+  @override
+  Future<List<Recipe>> build() async {
+    _allFavourites = await DatabaseService.getFavourites();
+    return _allFavourites;
   }
 
-  Future<void> loadFavourites() async {
-    _favourites = await DatabaseService.getFavourites();
-    _filteredFavourites = _favourites;
-    notifyListeners();
+  List<Recipe> get _filtered {
+    if (_filterQuery.isEmpty) return _allFavourites;
+    final query = _filterQuery.toLowerCase();
+    return _allFavourites
+        .where(
+          (r) =>
+              r.title.toLowerCase().contains(query) ||
+              r.description.toLowerCase().contains(query),
+        )
+        .toList();
   }
 
   Future<void> toggleFavourite(Recipe recipe) async {
-    final isFav = _favourites.any((r) => r.title == recipe.title);
+    final isFav = _allFavourites.any((r) => r.title == recipe.title);
 
     if (isFav) {
       await DatabaseService.deleteFavourite(recipe.title);
-      _favourites.removeWhere((r) => r.title == recipe.title);
+      _allFavourites.removeWhere((r) => r.title == recipe.title);
     } else {
       await DatabaseService.insertFavourite(recipe);
-      _favourites.add(recipe);
+      _allFavourites.add(recipe);
     }
 
-    notifyListeners();
+    state = AsyncData(_filtered);
   }
 
   bool isFavourite(Recipe recipe) {
-    return _favourites.any((r) => r.title == recipe.title);
+    return _allFavourites.any((r) => r.title == recipe.title);
   }
 
   Future<void> updateRecipe(Recipe updatedRecipe) async {
-    final index = _filteredFavourites.indexWhere(
+    final index = _allFavourites.indexWhere(
       (r) => r.title == updatedRecipe.title,
     );
+    if (index == -1) return;
 
-    if (index == -1) {
-      return; // recipe not found, safety guard
-    }
-
-    // Update database first
     await DatabaseService.updateFavourite(updatedRecipe);
+    _allFavourites[index] = updatedRecipe;
 
-    // Update in-memory list
-    _favourites[index] = updatedRecipe;
-
-    notifyListeners();
+    state = AsyncData(_filtered);
   }
 
   void filterRecipes(String value) {
-    if (value.isEmpty) {
-      _filteredFavourites = _favourites;
-    } else {
-      _filteredFavourites = _favourites
-          .where(
-            (recipe) =>
-                recipe.title.toLowerCase().contains(value.toLowerCase()) ||
-                recipe.description.toLowerCase().contains(value.toLowerCase()),
-          )
-          .toList();
-    }
-    notifyListeners();
+    _filterQuery = value;
+    state = AsyncData(_filtered);
   }
 }
