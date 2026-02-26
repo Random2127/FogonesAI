@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 final ThemeData darkMode = ThemeData(
-  // Comentario
+  // Vamos a ver si furula el tema oscuro, no tengo mucha fe pero vamos a intentarlo
   brightness: Brightness.dark,
   fontFamily: 'Poppins',
   scaffoldBackgroundColor: const Color(0xFF1F1A16),
