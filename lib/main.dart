@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:fogonesia/app/app_bootstrap.dart';
 import 'package:fogonesia/core/settings/theme_controller.dart';
 import 'package:fogonesia/core/theme/app_theme.dart' as app_theme;
@@ -7,7 +8,6 @@ import 'package:fogonesia/features/recipe/model/recipe.dart';
 import 'package:fogonesia/features/recipe/screens/edit_recipe_screen.dart';
 import 'package:fogonesia/features/recipe/screens/recipe_details_screen.dart';
 import 'package:fogonesia/shared/routes.dart';
-import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 void main() async {
@@ -18,17 +18,17 @@ void main() async {
   runApp(AppBootStrap(sharedPrefs: sharedPrefs));
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends ConsumerWidget {
   const MyApp({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    final theme = context.watch<ThemeController>();
+  Widget build(BuildContext context, WidgetRef ref) {
+    final themeMode = ref.watch(themeControllerProvider);
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       theme: app_theme.lightMode,
       darkTheme: app_theme.darkMode,
-      themeMode: theme.themeMode,
+      themeMode: themeMode,
       initialRoute: Routes.home,
       routes: Routes.routes,
       onGenerateRoute: (settings) {

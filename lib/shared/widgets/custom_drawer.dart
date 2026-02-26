@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:fogonesia/core/settings/theme_controller.dart';
-import 'package:provider/provider.dart';
 
-class CustomDrawer extends StatelessWidget {
+class CustomDrawer extends ConsumerWidget {
   const CustomDrawer({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    final themeController = context.watch<ThemeController>();
+  Widget build(BuildContext context, WidgetRef ref) {
+    final themeMode = ref.watch(themeControllerProvider);
+    final themeController = ref.read(themeControllerProvider.notifier);
     return Drawer(
       child: ListView(
         padding: EdgeInsets.zero,
@@ -39,7 +40,7 @@ class CustomDrawer extends StatelessWidget {
             leading: const Icon(Icons.color_lens),
             title: const Text('Theme'),
             trailing: Switch(
-              value: themeController.isDarkMode,
+              value: themeMode == ThemeMode.dark,
               onChanged: (value) {
                 themeController.setThemeMode(
                   value ? ThemeMode.dark : ThemeMode.light,

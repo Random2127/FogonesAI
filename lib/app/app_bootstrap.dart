@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart' hide Provider;
 import 'package:fogonesia/core/settings/app_config_controller.dart';
 import 'package:fogonesia/core/settings/theme_controller.dart';
 import 'package:fogonesia/features/chat/controller/chat_controller.dart';
@@ -16,26 +17,28 @@ class AppBootStrap extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MultiProvider(
-      providers: [
-        Provider<SharedPreferences>.value(value: sharedPrefs),
-        ChangeNotifierProvider(
-          create: (_) => AppConfigController(sharedPrefs),
-        ),
-        ChangeNotifierProvider(
-          create: (_) => ThemeController(sharedPrefs),
-        ),
-        ChangeNotifierProvider(
-          create: (_) => ChatController(GeminiService()),
-        ),
-        ChangeNotifierProvider(
-          create: (_) => DietaryController(sharedPrefs),
-        ),
-        ChangeNotifierProvider(
-          create: (_) => RecipeController(sharedPrefs),
-        ),
+    return ProviderScope(
+      overrides: [
+        sharedPreferencesProvider.overrideWithValue(sharedPrefs),
       ],
-      child: MyApp(),
+      child: MultiProvider(
+        providers: [
+          Provider<SharedPreferences>.value(value: sharedPrefs),
+          ChangeNotifierProvider(
+            create: (_) => AppConfigController(sharedPrefs),
+          ),
+          ChangeNotifierProvider(
+            create: (_) => ChatController(GeminiService()),
+          ),
+          ChangeNotifierProvider(
+            create: (_) => DietaryController(sharedPrefs),
+          ),
+          ChangeNotifierProvider(
+            create: (_) => RecipeController(sharedPrefs),
+          ),
+        ],
+        child: MyApp(),
+      ),
     );
   }
 }

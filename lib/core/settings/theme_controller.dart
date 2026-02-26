@@ -1,14 +1,21 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-class ThemeController extends ChangeNotifier {
-  final SharedPreferences _prefs;
+final sharedPreferencesProvider = Provider<SharedPreferences>((ref) {
+  throw UnimplementedError('Must be overridden in ProviderScope');
+});
 
-  ThemeController(this._prefs);
+final themeControllerProvider =
+    NotifierProvider<ThemeController, ThemeMode>(ThemeController.new);
 
+class ThemeController extends Notifier<ThemeMode> {
   static const _themeKey = 'theme_mode';
 
-  ThemeMode get themeMode {
+  SharedPreferences get _prefs => ref.read(sharedPreferencesProvider);
+
+  @override
+  ThemeMode build() {
     final value = _prefs.getString(_themeKey);
     return ThemeMode.values.firstWhere(
       (e) => e.name == value,
@@ -18,10 +25,8 @@ class ThemeController extends ChangeNotifier {
 
   void setThemeMode(ThemeMode mode) {
     _prefs.setString(_themeKey, mode.name);
-    notifyListeners();
+    state = mode;
   }
 
-  bool get isDarkMode {
-    return themeMode == ThemeMode.dark;
-  }
+  bool get isDarkMode => state == ThemeMode.dark;
 }
