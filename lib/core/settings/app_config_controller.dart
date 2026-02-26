@@ -1,24 +1,27 @@
-import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:fogonesia/core/settings/theme_controller.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-class AppConfigController extends ChangeNotifier {
-  final SharedPreferences _prefs;
+final appConfigControllerProvider =
+    NotifierProvider<AppConfigController, bool>(AppConfigController.new);
 
-  AppConfigController(this._prefs);
-
+class AppConfigController extends Notifier<bool> {
   static const _onboardingCompleteKey = 'onboardingComplete';
 
-  bool get onboardingComplete =>
-      _prefs.getBool(_onboardingCompleteKey) ?? false;
+  SharedPreferences get _prefs => ref.read(sharedPreferencesProvider);
+
+  @override
+  bool build() {
+    return _prefs.getBool(_onboardingCompleteKey) ?? false;
+  }
 
   Future<void> markOnboardingCompleted() async {
     await _prefs.setBool(_onboardingCompleteKey, true);
-    notifyListeners();
+    state = true;
   }
 
-  // Helper to reset if you want to test the flow again
   Future<void> resetOnboarding() async {
     await _prefs.setBool(_onboardingCompleteKey, false);
-    notifyListeners();
+    state = false;
   }
 }
