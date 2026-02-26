@@ -4,10 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:fogonesia/app/app_bootstrap.dart';
 import 'package:fogonesia/core/settings/theme_controller.dart';
 import 'package:fogonesia/core/theme/app_theme.dart' as app_theme;
-import 'package:fogonesia/features/recipe/model/recipe.dart';
-import 'package:fogonesia/features/recipe/screens/edit_recipe_screen.dart';
-import 'package:fogonesia/features/recipe/screens/recipe_details_screen.dart';
-import 'package:fogonesia/shared/routes.dart';
+import 'package:fogonesia/shared/app_router.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 void main() async {
@@ -24,28 +21,12 @@ class MyApp extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final themeMode = ref.watch(themeControllerProvider);
-    return MaterialApp(
+    return MaterialApp.router(
       debugShowCheckedModeBanner: false,
       theme: app_theme.lightMode,
       darkTheme: app_theme.darkMode,
       themeMode: themeMode,
-      initialRoute: Routes.home,
-      routes: Routes.routes,
-      onGenerateRoute: (settings) {
-        switch (settings.name) {
-          case Routes.recipeDetails:
-            final title = settings.arguments as String;
-            return MaterialPageRoute(
-              builder: (_) => RecipeDetailsScreen(recipeTitle: title),
-            );
-          case Routes.editRecipe:
-            final recipe = settings.arguments as Recipe;
-            return MaterialPageRoute(
-              builder: (_) => EditRecipeScreen(recipe: recipe),
-            );
-        }
-        return null;
-      },
+      routerConfig: AppRouter.router,
     );
   }
 }

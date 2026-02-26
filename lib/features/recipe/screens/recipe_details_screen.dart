@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:fogonesia/features/recipe/controller/recipe_controller.dart';
 import 'package:fogonesia/features/recipe/model/recipe.dart';
-import 'package:fogonesia/shared/routes.dart';
+import 'package:go_router/go_router.dart';
 
 class RecipeDetailsScreen extends ConsumerWidget {
   final String recipeTitle;
@@ -17,13 +17,12 @@ class RecipeDetailsScreen extends ConsumerWidget {
           const Scaffold(body: Center(child: CircularProgressIndicator())),
       error: (e, _) => Scaffold(body: Center(child: Text('Error: $e'))),
       data: (recipes) {
-        final recipe = recipes
-            .cast<Recipe?>()
-            .firstWhere((r) => r?.title == recipeTitle, orElse: () => null);
+        final recipe = recipes.cast<Recipe?>().firstWhere(
+          (r) => r?.title == recipeTitle,
+          orElse: () => null,
+        );
         if (recipe == null) {
-          return const Scaffold(
-            body: Center(child: Text('Recipe not found')),
-          );
+          return const Scaffold(body: Center(child: Text('Recipe not found')));
         }
 
         return Scaffold(
@@ -33,11 +32,7 @@ class RecipeDetailsScreen extends ConsumerWidget {
               IconButton(
                 icon: const Icon(Icons.edit),
                 onPressed: () {
-                  Navigator.pushNamed(
-                    context,
-                    Routes.editRecipe,
-                    arguments: recipe,
-                  );
+                  context.push('/editRecipe', extra: recipe);
                 },
               ),
             ],

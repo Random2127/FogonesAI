@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:fogonesia/features/recipe/controller/recipe_controller.dart';
-import 'package:fogonesia/shared/routes.dart';
+import 'package:go_router/go_router.dart';
 
 class RecipesScreen extends ConsumerWidget {
   const RecipesScreen({super.key});
@@ -58,11 +58,7 @@ class RecipesScreen extends ConsumerWidget {
                               ),
                               trailing: const Icon(Icons.chevron_right),
                               onTap: () {
-                                Navigator.pushNamed(
-                                  context,
-                                  Routes.recipeDetails,
-                                  arguments: recipe.title,
-                                );
+                                context.push('/recipe/${recipe.title}');
                               },
                             ),
                           );

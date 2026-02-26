@@ -4,14 +4,14 @@ import 'package:fogonesia/features/dietary/screens/dietary_screen.dart';
 import 'package:fogonesia/features/recipe/screens/recipes_screen.dart';
 import 'package:fogonesia/shared/widgets/custom_drawer.dart';
 
-class HomePage extends StatefulWidget {
-  const HomePage({super.key});
+class HomeShell extends StatefulWidget {
+  const HomeShell({super.key});
 
   @override
-  State<HomePage> createState() => _HomePageState();
+  State<HomeShell> createState() => _HomeShellState();
 }
 
-class _HomePageState extends State<HomePage> {
+class _HomeShellState extends State<HomeShell> {
   int _selectedIndex = 0;
   late final List<Widget> _screens = [
     const ChatScreen(),
