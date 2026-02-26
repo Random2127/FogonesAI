@@ -1,35 +1,50 @@
-import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:fogonesia/features/dietary/model/dietary_options.dart';
 import 'package:fogonesia/features/recipe/model/recipe.dart';
 import 'package:fogonesia/services/gemini_service.dart';
 import 'package:fogonesia/shared/build_recipe_prompt.dart';
 import 'package:fogonesia/shared/chat_message.dart';
 
-class ChatController extends ChangeNotifier {
-  final GeminiService _geminiService;
+class ChatState {
+  final List<ChatMessage> messages;
+  final bool isLoading;
 
-  ChatController(this._geminiService);
+  const ChatState({this.messages = const [], this.isLoading = false});
 
-  bool isLoading = false;
-  final List<ChatMessage> messages = [];
+  ChatState copyWith({List<ChatMessage>? messages, bool? isLoading}) {
+    return ChatState(
+      messages: messages ?? this.messages,
+      isLoading: isLoading ?? this.isLoading,
+    );
+  }
+}
+
+final chatControllerProvider =
+    NotifierProvider<ChatController, ChatState>(ChatController.new);
+
+class ChatController extends Notifier<ChatState> {
+  @override
+  ChatState build() => const ChatState();
 
   Future<void> sendMessage(String userInput, DietaryOptions options) async {
-    messages.add(ChatMessage.text(userInput, MessageSender.user));
-    isLoading = true;
-    notifyListeners();
+    final updated = [...state.messages, ChatMessage.text(userInput, MessageSender.user)];
+    state = state.copyWith(messages: updated, isLoading: true);
 
     final prompt = buildRecipePrompt(userPrompt: userInput, options: options);
 
     try {
-      final recipeJson = await _geminiService.generateRecipe(prompt);
+      final recipeJson = await GeminiService().generateRecipe(prompt);
       final recipe = Recipe.fromJson(recipeJson);
 
-      messages.add(ChatMessage.recipe(recipe, MessageSender.ai));
+      state = state.copyWith(
+        messages: [...state.messages, ChatMessage.recipe(recipe, MessageSender.ai)],
+        isLoading: false,
+      );
     } catch (e) {
-      messages.add(ChatMessage.text('Error: $e', MessageSender.ai));
-    } finally {
-      isLoading = false;
-      notifyListeners();
+      state = state.copyWith(
+        messages: [...state.messages, ChatMessage.text('Error: $e', MessageSender.ai)],
+        isLoading: false,
+      );
     }
   }
 }
