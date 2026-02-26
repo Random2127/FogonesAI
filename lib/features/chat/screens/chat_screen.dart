@@ -1,18 +1,19 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart' hide Consumer;
 import 'package:fogonesia/features/chat/controller/chat_controller.dart';
 import 'package:fogonesia/features/dietary/controller/dietary_controller.dart';
 import 'package:fogonesia/shared/widgets/chat_bubble.dart';
 import 'package:fogonesia/shared/widgets/input_bar.dart';
 import 'package:provider/provider.dart';
 
-class ChatScreen extends StatefulWidget {
+class ChatScreen extends ConsumerStatefulWidget {
   const ChatScreen({super.key});
 
   @override
-  State<ChatScreen> createState() => _ChatScreenState();
+  ConsumerState<ChatScreen> createState() => _ChatScreenState();
 }
 
-class _ChatScreenState extends State<ChatScreen> {
+class _ChatScreenState extends ConsumerState<ChatScreen> {
   @override
   void dispose() {
     _controller.dispose();
@@ -27,7 +28,7 @@ class _ChatScreenState extends State<ChatScreen> {
     final message = _controller.text.trim();
     if (message.isEmpty) return;
 
-    final dietaryOptions = context.read<DietaryController>().options;
+    final dietaryOptions = ref.read(dietaryControllerProvider);
     context.read<ChatController>().sendMessage(message, dietaryOptions);
     _controller.clear();
 

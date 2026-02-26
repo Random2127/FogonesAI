@@ -3,7 +3,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart' hide Provider;
 import 'package:fogonesia/core/settings/app_config_controller.dart';
 import 'package:fogonesia/core/settings/theme_controller.dart';
 import 'package:fogonesia/features/chat/controller/chat_controller.dart';
-import 'package:fogonesia/features/dietary/controller/dietary_controller.dart';
 import 'package:fogonesia/features/recipe/controller/recipe_controller.dart';
 import 'package:fogonesia/main.dart';
 import 'package:fogonesia/services/gemini_service.dart';
@@ -29,9 +28,6 @@ class AppBootStrap extends StatelessWidget {
           ),
           ChangeNotifierProvider(
             create: (_) => ChatController(GeminiService()),
-          ),
-          ChangeNotifierProvider(
-            create: (_) => DietaryController(sharedPrefs),
           ),
           ChangeNotifierProvider(
             create: (_) => RecipeController(sharedPrefs),
