@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:fogonesia/features/recipe/controller/recipe_controller.dart';
+import 'package:fogonesia/features/recipe/model/recipe.dart';
 import 'package:fogonesia/shared/routes.dart';
 import 'package:provider/provider.dart';
 
@@ -9,9 +10,14 @@ class RecipeDetailsScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final recipe = context.watch<RecipeController>().favourites.firstWhere(
-      (r) => r.title == recipeTitle,
-    );
+    final recipe = context
+        .watch<RecipeController>()
+        .favourites
+        .cast<Recipe?>()
+        .firstWhere((r) => r?.title == recipeTitle, orElse: () => null);
+    if (recipe == null) {
+      return const Scaffold(body: Center(child: Text('Recipe not found')));
+    }
 
     return Scaffold(
       appBar: AppBar(

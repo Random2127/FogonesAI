@@ -35,9 +35,9 @@ class DietaryController extends ChangeNotifier {
     notifyListeners();
   }
 
-  void resetOption() async {
+  Future<void> resetOption() async {
     _options = DietaryOptions();
-    _options.saveToPrefs(_prefs);
+    await _options.saveToPrefs(_prefs);
     notifyListeners();
   }
 }

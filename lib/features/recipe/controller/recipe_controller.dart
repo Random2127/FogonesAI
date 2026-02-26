@@ -43,7 +43,9 @@ class RecipeController extends ChangeNotifier {
   }
 
   Future<void> updateRecipe(Recipe updatedRecipe) async {
-    final index = _favourites.indexWhere((r) => r.title == updatedRecipe.title);
+    final index = _filteredFavourites.indexWhere(
+      (r) => r.title == updatedRecipe.title,
+    );
 
     if (index == -1) {
       return; // recipe not found, safety guard

@@ -15,9 +15,9 @@ class RecipeCard extends StatelessWidget {
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       decoration: BoxDecoration(
-        color: Colors.blueGrey,
+        color: Theme.of(context).primaryColor.withValues(),
         borderRadius: BorderRadius.circular(24),
-        border: Border.all(color: Colors.purple),
+        border: Border.all(color: Theme.of(context).primaryColor.withValues()),
       ),
       child: ClipRRect(
         borderRadius: BorderRadius.circular(24),
@@ -32,7 +32,8 @@ class RecipeCard extends StatelessWidget {
                   Expanded(
                     child: Text(
                       recipe.title,
-                      style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                      style: Theme.of(context).textTheme.headlineSmall
+                          ?.copyWith(
                             fontWeight: FontWeight.bold,
                             color: Colors.white,
                           ),
@@ -108,11 +109,7 @@ class RecipeCard extends StatelessWidget {
     );
   }
 
-  Widget _buildSectionTitle(
-    BuildContext context,
-    IconData icon,
-    String title,
-  ) {
+  Widget _buildSectionTitle(BuildContext context, IconData icon, String title) {
     return Row(
       children: [
         Icon(icon, size: 18, color: Colors.orangeAccent),

@@ -5,14 +5,20 @@ class AppConfigController extends ChangeNotifier {
   final SharedPreferences _prefs;
 
   AppConfigController(this._prefs);
-  // This would allow to control what should happen in the first run (Language, permissions,tutorial, etc.) Onboarding
-  // --- Keys ---
-  static const _onboardingCompleteKey = 'onboardingComplete';
-  // Null-aware operator true if the key does not exist
-  bool get onboardingComplete => _prefs.getBool(_onboardingCompleteKey) ?? true;
 
-  void markonboardingCompletee() {
-    _prefs.setBool(_onboardingCompleteKey, false);
+  static const _onboardingCompleteKey = 'onboardingComplete';
+
+  bool get onboardingComplete =>
+      _prefs.getBool(_onboardingCompleteKey) ?? false;
+
+  Future<void> markOnboardingCompleted() async {
+    await _prefs.setBool(_onboardingCompleteKey, true);
+    notifyListeners();
+  }
+
+  // Helper to reset if you want to test the flow again
+  Future<void> resetOnboarding() async {
+    await _prefs.setBool(_onboardingCompleteKey, false);
     notifyListeners();
   }
 }

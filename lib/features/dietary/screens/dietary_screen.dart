@@ -3,14 +3,9 @@ import 'package:fogonesia/features/dietary/controller/dietary_controller.dart';
 import 'package:fogonesia/features/dietary/widgets/dietary_tile.dart';
 import 'package:provider/provider.dart';
 
-class DietaryScreen extends StatefulWidget {
+class DietaryScreen extends StatelessWidget {
   const DietaryScreen({super.key});
 
-  @override
-  State<DietaryScreen> createState() => _DietaryScreenState();
-}
-
-class _DietaryScreenState extends State<DietaryScreen> {
   @override
   Widget build(BuildContext context) {
     final dietary = context.watch<DietaryController>();
