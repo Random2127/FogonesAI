@@ -16,7 +16,7 @@ class RecipeController extends AsyncNotifier<List<Recipe>> {
   }
 
   List<Recipe> get _filtered {
-    if (_filterQuery.isEmpty) return _allFavourites;
+    if (_filterQuery.isEmpty) return List.from(_allFavourites);
     final query = _filterQuery.toLowerCase();
     return _allFavourites
         .where(
@@ -38,7 +38,7 @@ class RecipeController extends AsyncNotifier<List<Recipe>> {
       _allFavourites.add(recipe);
     }
 
-    state = AsyncData(_filtered);
+    state = AsyncData([..._filtered]);
   }
 
   bool isFavourite(Recipe recipe) {
@@ -54,11 +54,11 @@ class RecipeController extends AsyncNotifier<List<Recipe>> {
     await DatabaseService.updateFavourite(updatedRecipe);
     _allFavourites[index] = updatedRecipe;
 
-    state = AsyncData(_filtered);
+    state = AsyncData([..._filtered]);
   }
 
   void filterRecipes(String value) {
     _filterQuery = value;
-    state = AsyncData(_filtered);
+    state = AsyncData([..._filtered]);
   }
 }

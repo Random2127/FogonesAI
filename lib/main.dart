@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:fogonesia/app/app_bootstrap.dart';
 import 'package:fogonesia/core/settings/theme_controller.dart';
@@ -9,7 +8,6 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await dotenv.load(fileName: ".env");
   final sharedPrefs = await SharedPreferences.getInstance();
 
   runApp(AppBootStrap(sharedPrefs: sharedPrefs));
