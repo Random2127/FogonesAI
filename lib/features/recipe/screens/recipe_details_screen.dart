@@ -1,52 +1,56 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:fogonesia/features/recipe/controller/recipe_controller.dart';
 import 'package:fogonesia/features/recipe/model/recipe.dart';
-import 'package:fogonesia/shared/routes.dart';
-import 'package:provider/provider.dart';
+import 'package:go_router/go_router.dart';
 
-class RecipeDetailsScreen extends StatelessWidget {
+class RecipeDetailsScreen extends ConsumerWidget {
   final String recipeTitle;
   const RecipeDetailsScreen({super.key, required this.recipeTitle});
 
   @override
-  Widget build(BuildContext context) {
-    final recipe = context
-        .watch<RecipeController>()
-        .favourites
-        .cast<Recipe?>()
-        .firstWhere((r) => r?.title == recipeTitle, orElse: () => null);
-    if (recipe == null) {
-      return const Scaffold(body: Center(child: Text('Recipe not found')));
-    }
+  Widget build(BuildContext context, WidgetRef ref) {
+    final recipesAsync = ref.watch(recipeControllerProvider);
 
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(recipe.title),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.edit),
-            onPressed: () {
-              Navigator.pushNamed(
-                context,
-                Routes.editRecipe,
-                arguments: recipe,
-              );
-            },
+    return recipesAsync.when(
+      loading: () =>
+          const Scaffold(body: Center(child: CircularProgressIndicator())),
+      error: (e, _) => Scaffold(body: Center(child: Text('Error: $e'))),
+      data: (recipes) {
+        final recipe = recipes.cast<Recipe?>().firstWhere(
+          (r) => r?.title == recipeTitle,
+          orElse: () => null,
+        );
+        if (recipe == null) {
+          return const Scaffold(body: Center(child: Text('Recipe not found')));
+        }
+
+        return Scaffold(
+          appBar: AppBar(
+            title: Text(recipe.title),
+            actions: [
+              IconButton(
+                icon: const Icon(Icons.edit),
+                onPressed: () {
+                  context.push('/editRecipe', extra: recipe);
+                },
+              ),
+            ],
           ),
-        ],
-      ),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            _section('Description', recipe.description),
-            _ingredients(recipe.ingredients),
-            _instructions(recipe.instructions),
-            _meta(recipe.time),
-          ],
-        ),
-      ),
+          body: SingleChildScrollView(
+            padding: const EdgeInsets.all(16),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                _section('Description', recipe.description),
+                _ingredients(recipe.ingredients),
+                _instructions(recipe.instructions),
+                _meta(recipe.time),
+              ],
+            ),
+          ),
+        );
+      },
     );
   }
 
