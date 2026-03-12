@@ -9,12 +9,6 @@ class GeminiService {
     // Implementation for calling the Gemini API with the provided prompt
     // and returning the generated recipe as a string.
 
-    // old code for dotenv usage
-    // final apiKey = dotenv.env['GEMINI_API_KEY'];
-    // if (apiKey == null) {
-    //  throw Exception('GEMINI_API_KEY not found');
-    // }
-
     final apiKey = Api.apiKey();
     final uri = Uri.parse(
       'https://generativelanguage.googleapis.com/v1beta/models/$_model:generateContent?key=$apiKey',

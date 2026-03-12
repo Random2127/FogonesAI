@@ -1,16 +1,18 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:fogonesia/features/recipe/controller/recipe_controller.dart';
 import 'package:fogonesia/features/recipe/model/recipe.dart';
-import 'package:provider/provider.dart';
+import 'package:fogonesia/widgets/components/save_button.dart';
 
-class RecipeCard extends StatelessWidget {
+class RecipeCard extends ConsumerWidget {
   final Recipe recipe;
   const RecipeCard({super.key, required this.recipe});
 
   @override
-  Widget build(BuildContext context) {
-    final recipeController = context.watch<RecipeController>();
-    final isFavourite = recipeController.isFavourite(recipe);
+  Widget build(BuildContext context, WidgetRef ref) {
+    ref.read(recipeControllerProvider.notifier);
+    final controller = ref.watch(recipeControllerProvider.notifier);
+    controller.isFavourite(recipe);
 
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
@@ -71,13 +73,7 @@ class RecipeCard extends StatelessWidget {
               ),
               Align(
                 alignment: Alignment.centerRight,
-                child: FloatingActionButton(
-                  mini: true,
-                  onPressed: () => recipeController.toggleFavourite(recipe),
-                  child: Icon(
-                    isFavourite ? Icons.favorite : Icons.favorite_border,
-                  ),
-                ),
+                child: SaveButton(recipe: recipe),
               ),
             ],
           ),

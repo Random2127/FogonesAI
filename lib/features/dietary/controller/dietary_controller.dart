@@ -1,14 +1,17 @@
-import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:fogonesia/core/settings/theme_controller.dart';
 import 'package:fogonesia/features/dietary/model/dietary_options.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-class DietaryController extends ChangeNotifier {
-  final SharedPreferences _prefs;
-  late DietaryOptions _options;
-  DietaryOptions get options => _options;
+final dietaryControllerProvider =
+    NotifierProvider<DietaryController, DietaryOptions>(DietaryController.new);
 
-  DietaryController(this._prefs) {
-    _options = DietaryOptions.fromPrefs(_prefs);
+class DietaryController extends Notifier<DietaryOptions> {
+  SharedPreferences get _prefs => ref.read(sharedPreferencesProvider);
+
+  @override
+  DietaryOptions build() {
+    return DietaryOptions.fromPrefs(_prefs);
   }
 
   Future<void> updateOption({
@@ -21,23 +24,21 @@ class DietaryController extends ChangeNotifier {
     bool? shellfishAllergy,
     bool? eggAllergy,
   }) async {
-    _options = DietaryOptions(
-      isVegan: isVegan ?? _options.isVegan,
-      isVegetarian: isVegetarian ?? _options.isVegetarian,
-      isGlutenFree: isGlutenFree ?? _options.isGlutenFree,
-      isDairyFree: isDairyFree ?? _options.isDairyFree,
-      nutAllergy: nutAllergy ?? _options.nutAllergy,
-      fishAllergy: fishAllergy ?? _options.fishAllergy,
-      shellfishAllergy: shellfishAllergy ?? _options.shellfishAllergy,
-      eggAllergy: eggAllergy ?? _options.eggAllergy,
+    state = DietaryOptions(
+      isVegan: isVegan ?? state.isVegan,
+      isVegetarian: isVegetarian ?? state.isVegetarian,
+      isGlutenFree: isGlutenFree ?? state.isGlutenFree,
+      isDairyFree: isDairyFree ?? state.isDairyFree,
+      nutAllergy: nutAllergy ?? state.nutAllergy,
+      fishAllergy: fishAllergy ?? state.fishAllergy,
+      shellfishAllergy: shellfishAllergy ?? state.shellfishAllergy,
+      eggAllergy: eggAllergy ?? state.eggAllergy,
     );
-    await _options.saveToPrefs(_prefs);
-    notifyListeners();
+    await state.saveToPrefs(_prefs);
   }
 
   Future<void> resetOption() async {
-    _options = DietaryOptions();
-    await _options.saveToPrefs(_prefs);
-    notifyListeners();
+    state = DietaryOptions();
+    await state.saveToPrefs(_prefs);
   }
 }
