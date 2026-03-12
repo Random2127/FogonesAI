@@ -23,12 +23,12 @@ class ChatBubble extends StatelessWidget {
     );
   }
 
-  Color _bubbleColour(bool isUser) {
+   Color _bubbleColour(bool isUser) {
     if (message.type == MessageType.recipe) {
       return Colors.transparent;
     }
     return isUser
-        ? const Color.fromARGB(255, 14, 64, 150)
+        ? const Color(0xFF774331)
         : const Color(0xFFE0E0E0);
   }
 
