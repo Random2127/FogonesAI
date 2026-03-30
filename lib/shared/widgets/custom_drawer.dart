@@ -17,9 +17,12 @@ class CustomDrawer extends ConsumerWidget {
             decoration: BoxDecoration(
               color: Theme.of(context).colorScheme.primaryContainer,
             ),
-            child: const Text(
+            child: Text(
               'Menu',
-              style: TextStyle(color: Colors.white, fontSize: 24),
+              style: TextStyle(
+                color: Theme.of(context).colorScheme.onPrimaryContainer,
+                fontSize: 24,
+              ),
             ),
           ),
           ListTile(

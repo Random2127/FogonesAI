@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:fogonesia/features/chat/screens/chat_screen.dart';
 import 'package:fogonesia/features/dietary/screens/dietary_screen.dart';
 import 'package:fogonesia/features/recipe/screens/recipes_screen.dart';
+import 'package:fogonesia/shared/widgets/custom_appbar.dart';
 import 'package:fogonesia/shared/widgets/custom_drawer.dart';
+import 'package:fogonesia/shared/widgets/custom_navbar.dart';
 
 class HomeShell extends StatefulWidget {
   const HomeShell({super.key});
@@ -22,30 +24,16 @@ class _HomeShellState extends State<HomeShell> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('FogonesIA'),
-        centerTitle: true,
-        backgroundColor: Theme.of(context).colorScheme.primaryContainer,
-      ),
+      appBar: const CustomAppBar(),
       drawer: const CustomDrawer(),
       body: IndexedStack(index: _selectedIndex, children: _screens),
-      bottomNavigationBar: BottomNavigationBar(
-        backgroundColor: Theme.of(context).colorScheme.primaryContainer,
-        selectedItemColor: Theme.of(context).colorScheme.onPrimaryContainer,
+      bottomNavigationBar: CustomNavbar(
         currentIndex: _selectedIndex,
         onTap: (index) {
           setState(() {
             _selectedIndex = index;
           });
         },
-        items: const [
-          BottomNavigationBarItem(icon: Icon(Icons.chat), label: 'Chat'),
-          BottomNavigationBarItem(icon: Icon(Icons.receipt), label: 'Recipes'),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.settings),
-            label: 'Dietary Prefs',
-          ),
-        ],
       ),
     );
   }
