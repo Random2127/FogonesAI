@@ -12,7 +12,20 @@
           "package_name": "com.example.fogonesia"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "471605034975-76d33tiq0cvulqfojhbok0vd8ap24ul4.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.fogonesia",
+            "certificate_hash": "8cdbef87fd8a4b6525fce2bf1cc4e203752bb47e"
+          }
+        },
+        {
+          "client_id": "471605034975-m4fd8u3k2t3fhrq176onkk6n7mho2ruh.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyBkTE9g3AvjZVd0DObFUdt7bI5ZvBQWMOc"
@@ -20,7 +33,12 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "471605034975-m4fd8u3k2t3fhrq176onkk6n7mho2ruh.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
         }
       }
     }
