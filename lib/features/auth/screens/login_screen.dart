@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:fogonesia/features/auth/auth_providers.dart';
 import 'package:fogonesia/shared/widgets/big_button.dart';
+import 'package:fogonesia/shared/widgets/google_auth_button.dart';
 import 'package:go_router/go_router.dart';
 
 class Login extends ConsumerStatefulWidget {
@@ -57,6 +58,22 @@ class _LoginState extends ConsumerState<Login> {
 
   void _showMessage(String text) {
     ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(text)));
+  }
+
+  Future<void> _signInWithGoogle() async {
+    setState(() => _busy = true);
+    final auth = ref.read(authServiceProvider);
+    final err = await auth.signInWithGoogle();
+    if (!mounted) return;
+    setState(() => _busy = false);
+    if (err == null) {
+      context.go('/home');
+      return;
+    }
+    if (err.isEmpty) {
+      return;
+    }
+    _showMessage(err);
   }
 
   @override
@@ -152,7 +169,33 @@ class _LoginState extends ConsumerState<Login> {
                     text: _busy ? 'Entrando…' : 'Iniciar sesión',
                     onPressed: _busy ? null : _submit,
                   ),
-                  const SizedBox(height: 12),
+                  const SizedBox(height: 20),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: Divider(color: scheme.outline.withValues(alpha: 0.5)),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 12),
+                        child: Text(
+                          'o',
+                          style: TextStyle(
+                            color: scheme.onSurface.withValues(alpha: 0.6),
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                      ),
+                      Expanded(
+                        child: Divider(color: scheme.outline.withValues(alpha: 0.5)),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 16),
+                  GoogleAuthButton(
+                    busy: _busy,
+                    onPressed: _signInWithGoogle,
+                  ),
+                  const SizedBox(height: 20),
                   BigButton(
                     text: 'Registrarse',
                     onPressed: _busy ? null : () => context.go('/register'),
