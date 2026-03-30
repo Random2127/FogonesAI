@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "471605034975",
+    "project_id": "fogonesia",
+    "storage_bucket": "fogonesia.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:471605034975:android:c8583846696190a6690e6a",
+        "android_client_info": {
+          "package_name": "com.example.fogonesia"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBkTE9g3AvjZVd0DObFUdt7bI5ZvBQWMOc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

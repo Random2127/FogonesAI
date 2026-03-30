@@ -1,3 +1,4 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:fogonesia/app/app_bootstrap.dart';
@@ -8,6 +9,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
   final sharedPrefs = await SharedPreferences.getInstance();
 
   runApp(AppBootStrap(sharedPrefs: sharedPrefs));
@@ -19,12 +21,13 @@ class MyApp extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final themeMode = ref.watch(themeControllerProvider);
+    final router = ref.watch(appRouterProvider);
     return MaterialApp.router(
       debugShowCheckedModeBanner: false,
       theme: app_theme.lightMode,
       darkTheme: app_theme.darkMode,
       themeMode: themeMode,
-      routerConfig: AppRouter.router,
+      routerConfig: router,
     );
   }
 }
