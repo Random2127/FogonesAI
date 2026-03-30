@@ -31,17 +31,18 @@ This is a **learning project** focused on Flutter architecture, state management
         
 - 🔐 **Environment-based API Key**
     
-    - Gemini API key stored safely in `.env` (not committed)
+    - Gemini API key stored safely in `lib/key/api.dart` (gitignored; not committed)
+
+- 🔐 **Authentication**
+
+    - Email/password with Firebase Auth
+    - Google Sign-In (Firebase Auth)
         
 
 ### 🚧 Planned (TODO)
 
-- 💾 Save generated recipes locally (SQLite)
-    
-- 📚 Recipes screen to list saved recipes
-    
-- ✏️ Editable recipes
-    
+- 💾 Migrate persistence from `sqflite` to Drift
+
 - 🧹 UI polish and UX improvements
     
 
@@ -63,18 +64,20 @@ Switches ON/OFF for dietary constraints|
 
 ### Core
 
-- **Flutter:** 3.35.6
-    
-- **Dart SDK:** 3.9.2
+- **Flutter:** stable (see `.docs/STACK.md`)
+
+- **Dart SDK:** `^3.9.2` (see `pubspec.yaml`)
     
 - **Target Platform:** Android
     
 
 ### Architecture
 
-- MVC-ish (learning-focused)
-    
-- **State Management:** Provider
+- Feature-first (learning-focused)
+
+- **State Management:** Riverpod (`flutter_riverpod`)
+
+- **Navigation:** `go_router`
     
 
 ### AI
@@ -102,28 +105,35 @@ dependencies:
 
   cupertino_icons: ^1.0.8
   shared_preferences: ^2.5.4
-  provider: ^6.1.5+1
   sqflite: ^2.4.2
   path: ^1.9.1
   firebase_core: ^4.2.1
   firebase_auth: ^6.1.2
   http: ^1.6.0
   flutter_dotenv: ^6.0.0
+  flutter_riverpod: ^3.2.1
+  riverpod_annotation: ^4.0.2
+  go_router: ^17.1.0
+  google_sign_in: ^7.2.0
 ```
 
 ---
 
 ## 🔑 Environment Variables
 
-This project uses a `.env` file to store sensitive data.
+This project can use a `.env` file for optional configuration (not committed).
 
 ### `.env` example
 
 ```env
-GEMINI_API_KEY=your_api_key_here
+GOOGLE_WEB_CLIENT_ID=your_web_client_id_here
 ```
 
 > ⚠️ The `.env` file is **not included** in the repository and should never be committed.
+
+### Gemini API key
+
+Gemini’s API key is stored under `lib/key/api.dart`, which is gitignored (`lib/key/` is not committed). Only `lib/services/gemini_service.dart` reads it.
 
 ---
 
@@ -131,13 +141,15 @@ GEMINI_API_KEY=your_api_key_here
 
 ### Prerequisites
 
-- Flutter 3.35.6
-    
-- Dart SDK 3.9.2
-    
+- Flutter (stable)
+
+- Dart SDK compatible with `pubspec.yaml` (`sdk: ^3.9.2`)
+
 - Android emulator or physical device
     
-- Gemini API key
+- Firebase project configured (Android `google-services.json` present)
+
+- Gemini API key (via `lib/key/api.dart`)
     
 
 ### Installation
@@ -148,7 +160,7 @@ cd fogonesia
 flutter pub get
 ```
 
-Create a `.env` file at the project root and add your Gemini API key.
+Optionally create a `.env` file at the project root and add `GOOGLE_WEB_CLIENT_ID` (only needed for some Google Sign-In setups).
 
 ```bash
 flutter run
@@ -160,7 +172,7 @@ flutter run
 
 - Learn Flutter app architecture beyond basics
     
-- Practice Provider-based state management
+- Practice Riverpod-based state management
     
 - Work with structured AI responses (JSON → UI)
     
@@ -173,7 +185,7 @@ flutter run
 
 ## 📌 Notes
 
-- Firebase is currently included for future authentication features
+- Firebase authentication is implemented (email/password + Google Sign-In)
     
 - This project is **not production-ready**
     
