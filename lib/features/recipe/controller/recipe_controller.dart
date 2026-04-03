@@ -1,6 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:fogonesia/data/providers/database_providers.dart';
 import 'package:fogonesia/features/recipe/model/recipe.dart';
-import 'package:fogonesia/services/database_service.dart';
 
 final recipeControllerProvider =
     AsyncNotifierProvider<RecipeController, List<Recipe>>(RecipeController.new);
@@ -11,7 +11,8 @@ class RecipeController extends AsyncNotifier<List<Recipe>> {
 
   @override
   Future<List<Recipe>> build() async {
-    _allFavourites = await DatabaseService.getFavourites();
+    final repo = ref.read(favouritesRepositoryProvider);
+    _allFavourites = await repo.getAll();
     return _allFavourites;
   }
 
@@ -30,11 +31,12 @@ class RecipeController extends AsyncNotifier<List<Recipe>> {
   Future<void> toggleFavourite(Recipe recipe) async {
     final isFav = _allFavourites.any((r) => r.title == recipe.title);
 
+    final repo = ref.read(favouritesRepositoryProvider);
     if (isFav) {
-      await DatabaseService.deleteFavourite(recipe.title);
+      await repo.deleteByTitle(recipe.title);
       _allFavourites.removeWhere((r) => r.title == recipe.title);
     } else {
-      await DatabaseService.insertFavourite(recipe);
+      await repo.upsert(recipe);
       _allFavourites.add(recipe);
     }
 
@@ -51,7 +53,7 @@ class RecipeController extends AsyncNotifier<List<Recipe>> {
     );
     if (index == -1) return;
 
-    await DatabaseService.updateFavourite(updatedRecipe);
+    await ref.read(favouritesRepositoryProvider).update(updatedRecipe);
     _allFavourites[index] = updatedRecipe;
 
     state = AsyncData([..._filtered]);
