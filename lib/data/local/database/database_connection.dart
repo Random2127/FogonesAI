@@ -6,6 +6,8 @@ import 'package:path/path.dart' as p;
 import 'package:sqflite/sqflite.dart' show getDatabasesPath;
 import 'package:sqlite3_flutter_libs/sqlite3_flutter_libs.dart';
 
+/// Returns the [LazyDatabase] used by [AppDatabase].
+///
 /// Opens the same on-disk file as the old [sqflite] helper (`app_data.db`
 /// under [getDatabasesPath]), so installs keep their data after migrating
 /// to Drift.

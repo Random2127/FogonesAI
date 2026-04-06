@@ -4,10 +4,16 @@ import 'package:fogonesia/data/local/tables/favourites.dart';
 
 part 'favourites_dao.g.dart';
 
+/// **Drift-only** access to the `favourites` table.
+///
+/// No [Recipe] type here — callers above this layer map rows to feature models.
+/// Generated mixin [_$FavouritesDaoMixin] is in `favourites_dao.g.dart`.
 @DriftAccessor(tables: [Favourites])
 class FavouritesDao extends DatabaseAccessor<AppDatabase>
     with _$FavouritesDaoMixin {
   FavouritesDao(super.db);
+
+  // --- Read ---
 
   Future<List<Favourite>> getAll() {
     return (select(favourites)..orderBy([(t) => OrderingTerm.asc(t.id)])).get();
@@ -27,6 +33,8 @@ class FavouritesDao extends DatabaseAccessor<AppDatabase>
     final row = await getByTitle(title);
     return row != null;
   }
+
+  // --- Write ---
 
   /// Matches legacy `ConflictAlgorithm.replace` on unique `title`.
   Future<int> insertReplace(FavouritesCompanion row) {

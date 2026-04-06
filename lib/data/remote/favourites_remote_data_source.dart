@@ -1,7 +1,8 @@
-/// Placeholder for a future remote store (e.g. Firestore).
+/// **Extension point** for cloud sync — not used yet.
 ///
-/// The repository can call into this interface after sync rules and mapping
-/// are defined. No network implementation yet.
+/// When you add Firestore (or similar), implement this class and pass it into
+/// [FavouritesRepositoryImpl] via [favouritesRepositoryProvider]. Keep network
+/// code out of [FavouritesDao] so local DB rules stay simple and testable.
 abstract class FavouritesRemoteDataSource {
   /// Example hook: upload or merge a single favourite after local write.
   // Future<void> pushUpsert(Recipe recipe);

@@ -3,6 +3,13 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:fogonesia/features/recipe/controller/recipe_controller.dart';
 import 'package:fogonesia/features/recipe/model/recipe.dart';
 
+/// Heart toggle on a recipe card: **UI entry point** for the favourites flow.
+///
+/// **Flow (tap → disk):** `toggleFavourite` on [RecipeController] →
+/// [favouritesRepositoryProvider] (see `database_providers.dart`) → SQLite via Drift.
+///
+/// Uses [recipeControllerProvider.select] so only this button rebuilds when
+/// “is this title in the list?” changes, not on every controller update.
 class SaveButton extends ConsumerWidget {
   final Recipe recipe;
 

@@ -1,5 +1,10 @@
 import 'dart:convert';
 
+/// In-memory recipe model for the recipe feature (UI, API JSON, favourites list).
+///
+/// **Favourites on disk:** SQLite rows are mapped to/from [Recipe] in
+/// [FavouritesRepositoryImpl], not here. [fromDbMap] / [RecipeDbMapper] are legacy
+/// helpers and are not used by the Drift path.
 class Recipe {
   final String title;
   final String description;

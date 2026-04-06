@@ -7,6 +7,12 @@ import 'package:fogonesia/data/remote/favourites_remote_data_source.dart';
 import 'package:fogonesia/domain/repositories/favourites_repository.dart';
 import 'package:fogonesia/features/recipe/model/recipe.dart';
 
+/// **Data-layer** implementation of [FavouritesRepository].
+///
+/// **Responsibilities:**
+/// - Call [FavouritesDao] for all SQLite access (Drift types only in the DAO).
+/// - Map Drift row type [Favourite] ↔ feature model [Recipe] (including JSON columns).
+/// - Later: optional [_remote] for sync after local writes.
 class FavouritesRepositoryImpl implements FavouritesRepository {
   FavouritesRepositoryImpl(
     this._dao, {
@@ -20,6 +26,8 @@ class FavouritesRepositoryImpl implements FavouritesRepository {
   final FavouritesRemoteDataSource? _remote;
 
   FavouritesRemoteDataSource? get remoteDataSource => _remote;
+
+  // --- Mapping (Drift ↔ Recipe) ---
 
   Recipe _rowToRecipe(Favourite row) {
     return Recipe(
@@ -62,6 +70,8 @@ class FavouritesRepositoryImpl implements FavouritesRepository {
       time: Value(recipe.time),
     );
   }
+
+  // --- FavouritesRepository ---
 
   @override
   Future<List<Recipe>> getAll() async {
