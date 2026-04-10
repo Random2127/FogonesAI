@@ -58,7 +58,10 @@ class RecipesScreen extends ConsumerWidget {
                               ),
                               trailing: const Icon(Icons.chevron_right),
                               onTap: () {
-                                context.push('/recipe/${recipe.title}');
+                                final id = recipe.id;
+                                if (id != null) {
+                                  context.push('/recipe/$id');
+                                }
                               },
                             ),
                           );

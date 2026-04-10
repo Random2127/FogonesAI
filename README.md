@@ -91,7 +91,7 @@ Switches ON/OFF for dietary constraints|
     
     - `shared_preferences`
         
-    - `sqflite`
+    - Drift (`drift` + `sqlite3_flutter_libs`) + `path_provider` for DB path
         
 
 ---
@@ -105,7 +105,9 @@ dependencies:
 
   cupertino_icons: ^1.0.8
   shared_preferences: ^2.5.4
-  sqflite: ^2.4.2
+  drift: ^2.28.0
+  sqlite3_flutter_libs: ^0.5.39
+  path_provider: ^2.1.5
   path: ^1.9.1
   firebase_core: ^4.2.1
   firebase_auth: ^6.1.2

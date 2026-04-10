@@ -30,7 +30,10 @@ class _EditRecipeScreenState extends ConsumerState<EditRecipeScreen> {
     _instructionsController = TextEditingController(
       text: recipe.instructions.join('\n'),
     );
-    _timeController = TextEditingController(text: recipe.time.toString());
+    final mins = recipe.displayTimeMinutes;
+    _timeController = TextEditingController(
+      text: mins > 0 ? mins.toString() : '',
+    );
   }
 
   @override
@@ -63,7 +66,7 @@ class _EditRecipeScreenState extends ConsumerState<EditRecipeScreen> {
               _field('Title', _titleController),
               _field('Description', _descriptionController, maxLines: 3),
               _field(
-                'Ingredients (comma separated)',
+                'Ingredients (one per line)',
                 _ingredientsController,
                 maxLines: 3,
               ),
@@ -105,11 +108,12 @@ class _EditRecipeScreenState extends ConsumerState<EditRecipeScreen> {
   }
 
   void _saveRecipe() {
+    final parsed = int.tryParse(_timeController.text.trim());
     final updatedRecipe = widget.recipe.copyWith(
       title: _titleController.text.trim(),
       description: _descriptionController.text.trim(),
       ingredients: _ingredientsController.text
-          .split(',')
+          .split('\n')
           .map((e) => e.trim())
           .where((e) => e.isNotEmpty)
           .toList(),
@@ -118,7 +122,8 @@ class _EditRecipeScreenState extends ConsumerState<EditRecipeScreen> {
           .map((e) => e.trim())
           .where((e) => e.isNotEmpty)
           .toList(),
-      time: int.tryParse(_timeController.text) ?? widget.recipe.time,
+      prepTime: parsed ?? widget.recipe.prepTime,
+      cookTime: widget.recipe.cookTime,
     );
 
     ref.read(recipeControllerProvider.notifier).updateRecipe(updatedRecipe);

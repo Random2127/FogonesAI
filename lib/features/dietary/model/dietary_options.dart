@@ -1,5 +1,8 @@
 import 'package:shared_preferences/shared_preferences.dart';
 
+/// User dietary flags for prompts and `user_dietary_preferences` (Drift).
+///
+/// [fromPrefs] is only used for one-time migration from pre-Drift keys.
 class DietaryOptions {
   final bool isVegan;
   final bool isVegetarian;
@@ -21,7 +24,6 @@ class DietaryOptions {
     this.eggAllergy = false,
   });
 
-  // Load from SharePrefs
   static DietaryOptions fromPrefs(SharedPreferences prefs) {
     return DietaryOptions(
       isVegan: prefs.getBool('isVegan') ?? false,
@@ -33,17 +35,5 @@ class DietaryOptions {
       shellfishAllergy: prefs.getBool('shellfishAllergy') ?? false,
       eggAllergy: prefs.getBool('eggAllergy') ?? false,
     );
-  }
-
-  // Save to SharePrefs
-  Future<void> saveToPrefs(SharedPreferences prefs) async {
-    await prefs.setBool('isVegan', isVegan);
-    await prefs.setBool('isVegetarian', isVegetarian);
-    await prefs.setBool('isGlutenFree', isGlutenFree);
-    await prefs.setBool('isDairyFree', isDairyFree);
-    await prefs.setBool('nutAllergy', nutAllergy);
-    await prefs.setBool('fishAllergy', fishAllergy);
-    await prefs.setBool('shellfishAllergy', shellfishAllergy);
-    await prefs.setBool('eggAllergy', eggAllergy);
   }
 }

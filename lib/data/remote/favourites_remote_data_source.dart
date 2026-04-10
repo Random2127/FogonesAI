@@ -1,7 +1,9 @@
-/// Placeholder for a future remote store (e.g. Firestore).
+/// **Extension point** for cloud sync — **not implemented** (no Firestore yet).
 ///
-/// The repository can call into this interface after sync rules and mapping
-/// are defined. No network implementation yet.
+/// Naming keeps the historical British spelling; replace with a concrete
+/// `FavoritesRemoteDataSource` (or similar) when you add sync. Implement this
+/// class and inject it from a provider alongside [RecipeRepository]. Keep
+/// network code out of Drift DAOs.
 abstract class FavouritesRemoteDataSource {
   /// Example hook: upload or merge a single favourite after local write.
   // Future<void> pushUpsert(Recipe recipe);

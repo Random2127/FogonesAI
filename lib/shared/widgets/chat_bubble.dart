@@ -1,13 +1,21 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:fogonesia/features/chat/controller/chat_controller.dart';
 import 'package:fogonesia/features/recipe/widgets/recipe_card.dart';
 import 'package:fogonesia/shared/chat_message.dart';
 
-class ChatBubble extends StatelessWidget {
+class ChatBubble extends ConsumerWidget {
   final ChatMessage message;
-  const ChatBubble({super.key, required this.message});
+  final int messageIndex;
+
+  const ChatBubble({
+    super.key,
+    required this.message,
+    required this.messageIndex,
+  });
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final isUser = message.sender == MessageSender.user;
     return Align(
       alignment: isUser ? Alignment.centerRight : Alignment.centerLeft,
@@ -18,12 +26,12 @@ class ChatBubble extends StatelessWidget {
           color: _bubbleColour(isUser),
           borderRadius: BorderRadius.circular(16.0),
         ),
-        child: _buildContent(context),
+        child: _buildContent(context, ref),
       ),
     );
   }
 
-   Color _bubbleColour(bool isUser) {
+  Color _bubbleColour(bool isUser) {
     if (message.type == MessageType.recipe) {
       return Colors.transparent;
     }
@@ -32,7 +40,7 @@ class ChatBubble extends StatelessWidget {
         : const Color(0xFFE0E0E0);
   }
 
-  Widget _buildContent(BuildContext context) {
+  Widget _buildContent(BuildContext context, WidgetRef ref) {
     switch (message.type) {
       case MessageType.text:
         return Text(
@@ -44,7 +52,14 @@ class ChatBubble extends StatelessWidget {
           ),
         );
       case MessageType.recipe:
-        return RecipeCard(recipe: message.recipe!);
+        return RecipeCard(
+          recipe: message.recipe!,
+          onRecipePersisted: (persisted) {
+            ref
+                .read(chatControllerProvider.notifier)
+                .replaceRecipeAt(messageIndex, persisted);
+          },
+        );
     }
   }
 }

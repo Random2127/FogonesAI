@@ -47,4 +47,15 @@ class ChatController extends Notifier<ChatState> {
       );
     }
   }
+
+  /// After [RecipeController] persists a chat-generated recipe, replace the
+  /// bubble’s in-memory [Recipe] so the heart uses the new UUID.
+  void replaceRecipeAt(int index, Recipe updated) {
+    final list = [...state.messages];
+    if (index < 0 || index >= list.length) return;
+    final m = list[index];
+    if (m.type != MessageType.recipe || m.recipe == null) return;
+    list[index] = ChatMessage.recipe(updated, m.sender);
+    state = state.copyWith(messages: list);
+  }
 }
