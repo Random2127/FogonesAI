@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:fogonesia/features/chat/controller/chat_controller.dart';
 import 'package:fogonesia/features/dietary/controller/dietary_controller.dart';
+import 'package:fogonesia/features/dietary/model/dietary_options.dart';
 import 'package:fogonesia/shared/widgets/chat_bubble.dart';
 import 'package:fogonesia/shared/widgets/input_bar.dart';
 
@@ -27,7 +28,11 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
     final message = _controller.text.trim();
     if (message.isEmpty) return;
 
-    final dietaryOptions = ref.read(dietaryControllerProvider);
+    final dietaryAsync = ref.read(dietaryControllerProvider);
+    final dietaryOptions = switch (dietaryAsync) {
+      AsyncData<DietaryOptions>(:final value) => value,
+      _ => DietaryOptions(),
+    };
     ref.read(chatControllerProvider.notifier).sendMessage(message, dietaryOptions);
     _controller.clear();
 
@@ -60,7 +65,10 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
                     child: Center(child: CircularProgressIndicator()),
                   );
                 }
-                return ChatBubble(message: chat.messages[index]);
+                return ChatBubble(
+                  message: chat.messages[index],
+                  messageIndex: index,
+                );
               },
             ),
           ),

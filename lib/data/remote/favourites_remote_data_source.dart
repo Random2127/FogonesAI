@@ -1,8 +1,9 @@
-/// **Extension point** for cloud sync — not used yet.
+/// **Extension point** for cloud sync — **not implemented** (no Firestore yet).
 ///
-/// When you add Firestore (or similar), implement this class and pass it into
-/// [FavouritesRepositoryImpl] via [favouritesRepositoryProvider]. Keep network
-/// code out of [FavouritesDao] so local DB rules stay simple and testable.
+/// Naming keeps the historical British spelling; replace with a concrete
+/// `FavoritesRemoteDataSource` (or similar) when you add sync. Implement this
+/// class and inject it from a provider alongside [RecipeRepository]. Keep
+/// network code out of Drift DAOs.
 abstract class FavouritesRemoteDataSource {
   /// Example hook: upload or merge a single favourite after local write.
   // Future<void> pushUpsert(Recipe recipe);

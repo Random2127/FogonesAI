@@ -3,17 +3,18 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:fogonesia/features/recipe/controller/recipe_controller.dart';
 import 'package:fogonesia/features/recipe/model/recipe.dart';
 
-/// Heart toggle on a recipe card: **UI entry point** for the favourites flow.
+/// Heart toggle: saves a new recipe row (UUID) or removes by [Recipe.id].
 ///
-/// **Flow (tap → disk):** `toggleFavourite` on [RecipeController] →
-/// [favouritesRepositoryProvider] (see `database_providers.dart`) → SQLite via Drift.
+/// **Flow:** [RecipeController.toggleFavourite] → [recipeRepositoryProvider] → `recipes` table.
+/// [select] limits rebuilds to whether this [recipe.id] appears in the saved list.
 ///
-/// Uses [recipeControllerProvider.select] so only this button rebuilds when
-/// “is this title in the list?” changes, not on every controller update.
+/// [onPersisted] runs when a recipe is **saved or re-starred** (not on unfavourite),
+/// e.g. chat can replace the in-memory [Recipe] so the heart reflects the new id.
 class SaveButton extends ConsumerWidget {
   final Recipe recipe;
+  final void Function(Recipe persisted)? onPersisted;
 
-  const SaveButton({super.key, required this.recipe});
+  const SaveButton({super.key, required this.recipe, this.onPersisted});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -23,7 +24,9 @@ class SaveButton extends ConsumerWidget {
       recipeControllerProvider.select(
         (state) =>
             state.whenOrNull(
-              data: (recipes) => recipes.any((r) => r.title == recipe.title),
+              data: (recipes) =>
+                  recipe.id != null &&
+                  recipes.any((r) => r.id == recipe.id),
             ) ??
             false,
       ),
@@ -31,7 +34,12 @@ class SaveButton extends ConsumerWidget {
 
     return FloatingActionButton(
       mini: true,
-      onPressed: () => controller.toggleFavourite(recipe),
+      onPressed: () async {
+        final persisted = await controller.toggleFavourite(recipe);
+        if (persisted != null) {
+          onPersisted?.call(persisted);
+        }
+      },
       child: Icon(isFavourite ? Icons.favorite : Icons.favorite_border),
     );
   }

@@ -1,36 +1,40 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:fogonesia/data/providers/database_providers.dart';
+import 'package:fogonesia/features/auth/auth_providers.dart';
 import 'package:fogonesia/features/recipe/model/recipe.dart';
 
-/// Exposes the list of **saved (favourite) recipes** for the recipe feature UI.
+/// Exposes **favorited** recipes for the signed-in user (`favorites` ⋈ `recipes`).
 ///
-/// **Persistence:** all reads/writes go through [favouritesRepositoryProvider]
-/// ([FavouritesRepository]), not Drift/SQLite directly — see `lib/domain` + `lib/data`.
+/// **Persistence:** [recipeRepositoryProvider] + Firebase uid.
 final recipeControllerProvider =
     AsyncNotifierProvider<RecipeController, List<Recipe>>(RecipeController.new);
 
-/// Coordinates favourite recipes in memory and keeps the DB in sync.
-///
-/// **State:** [AsyncNotifier] state is the **filtered** list for the UI; the full
-/// list lives in [_allFavourites]. [filterRecipes] only affects what is shown,
-/// not what is stored.
+/// Keeps the favorited list in memory and syncs with Drift.
 class RecipeController extends AsyncNotifier<List<Recipe>> {
-  List<Recipe> _allFavourites = [];
+  List<Recipe> _allSaved = [];
   String _filterQuery = '';
 
-  /// Loads every favourite from local storage once when this provider is first read.
   @override
   Future<List<Recipe>> build() async {
-    final repo = ref.read(favouritesRepositoryProvider);
-    _allFavourites = await repo.getAll();
-    return _allFavourites;
+    final user = ref.read(firebaseAuthProvider).currentUser;
+    if (user == null) {
+      _allSaved = [];
+      return _allSaved;
+    }
+    final repo = ref.read(recipeRepositoryProvider);
+    await repo.ensureUserForFirebaseAccount(
+      uid: user.uid,
+      email: user.email,
+      displayName: user.displayName,
+    );
+    _allSaved = await repo.listFavoritedRecipesForUser(user.uid);
+    return _allSaved;
   }
 
-  /// Applies [_filterQuery] to [_allFavourites] for display (no I/O).
   List<Recipe> get _filtered {
-    if (_filterQuery.isEmpty) return List.from(_allFavourites);
+    if (_filterQuery.isEmpty) return List.from(_allSaved);
     final query = _filterQuery.toLowerCase();
-    return _allFavourites
+    return _allSaved
         .where(
           (r) =>
               r.title.toLowerCase().contains(query) ||
@@ -39,38 +43,62 @@ class RecipeController extends AsyncNotifier<List<Recipe>> {
         .toList();
   }
 
-  /// Add or remove [recipe] in SQLite (by title), then refresh in-memory list + UI state.
-  Future<void> toggleFavourite(Recipe recipe) async {
-    final isFav = _allFavourites.any((r) => r.title == recipe.title);
+  /// New recipe: `recipes` + `favorites`. Remove: drop link + delete recipe row.
+  ///
+  /// Returns the persisted recipe when a **new** favourite is created or an
+  /// existing row is starred; `null` when removing a favourite or on error
+  /// before state is updated.
+  Future<Recipe?> toggleFavourite(Recipe recipe) async {
+    final user = ref.read(firebaseAuthProvider).currentUser;
+    if (user == null) return null;
 
-    final repo = ref.read(favouritesRepositoryProvider);
-    if (isFav) {
-      await repo.deleteByTitle(recipe.title);
-      _allFavourites.removeWhere((r) => r.title == recipe.title);
-    } else {
-      await repo.upsert(recipe);
-      _allFavourites.add(recipe);
+    final repo = ref.read(recipeRepositoryProvider);
+    try {
+      final isSaved = recipe.id != null &&
+          _allSaved.any((r) => r.id == recipe.id);
+      if (isSaved) {
+        await repo.unfavoriteAndDeleteRecipe(user.uid, recipe.id!);
+        _allSaved.removeWhere((r) => r.id == recipe.id);
+        state = AsyncData([..._filtered]);
+        return null;
+      }
+      if (recipe.id == null) {
+        final saved = await repo.createAndFavoriteRecipe(recipe, user.uid);
+        _allSaved.add(saved);
+        state = AsyncData([..._filtered]);
+        return saved;
+      }
+      await repo.addFavorite(user.uid, recipe.id!);
+      final existing = await repo.getRecipeById(recipe.id!);
+      if (existing != null) {
+        _allSaved.add(existing);
+      }
+      state = AsyncData([..._filtered]);
+      return existing;
+    } catch (e, st) {
+      state = AsyncError(e, st);
+      return null;
     }
-
-    state = AsyncData([..._filtered]);
   }
 
-  /// In-memory check only; does not query the DB (list was loaded in [build]).
   bool isFavourite(Recipe recipe) {
-    return _allFavourites.any((r) => r.title == recipe.title);
+    if (recipe.id == null) return false;
+    return _allSaved.any((r) => r.id == recipe.id);
   }
 
-  /// Persists edits for an already-saved favourite (matched by [Recipe.title]).
   Future<void> updateRecipe(Recipe updatedRecipe) async {
-    final index = _allFavourites.indexWhere(
-      (r) => r.title == updatedRecipe.title,
-    );
+    final id = updatedRecipe.id;
+    if (id == null) return;
+    final index = _allSaved.indexWhere((r) => r.id == id);
     if (index == -1) return;
 
-    await ref.read(favouritesRepositoryProvider).update(updatedRecipe);
-    _allFavourites[index] = updatedRecipe;
-
-    state = AsyncData([..._filtered]);
+    try {
+      await ref.read(recipeRepositoryProvider).updateRecipe(updatedRecipe);
+      _allSaved[index] = updatedRecipe;
+      state = AsyncData([..._filtered]);
+    } catch (e, st) {
+      state = AsyncError(e, st);
+    }
   }
 
   void filterRecipes(String value) {

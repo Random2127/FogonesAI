@@ -54,10 +54,10 @@ final appRouterProvider = Provider<GoRouter>((ref) {
         builder: (context, state) => const DietaryScreen(),
       ),
       GoRoute(
-        path: '/recipe/:title',
+        path: '/recipe/:id',
         builder: (context, state) {
-          final title = state.pathParameters['title']!;
-          return RecipeDetailsScreen(recipeTitle: title);
+          final id = state.pathParameters['id']!;
+          return RecipeDetailsScreen(recipeId: id);
         },
       ),
       GoRoute(

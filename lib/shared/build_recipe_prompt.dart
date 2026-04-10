@@ -43,7 +43,10 @@ Do NOT include:
 
 JSON structure:
 {"title": "...", "description": "...", "time": 30, "servings": 2,
- "cuisine": "...", "ingredients": ["..."], "instructions": ["..."]}
+ "cuisine": "...", "ingredients": ["..."], "instructions": ["..."],
+ "nutrition": {"calories": 320, "proteins": 12.5, "carbohydrates": 40, "fiber": 6}}
+
+Include "nutrition" only when you can estimate reasonable values from the recipe; otherwise omit "nutrition" or use null fields.
 
 Dietary constraints:
 ${constraints.isEmpty ? "None" : constraints.join("\n")}

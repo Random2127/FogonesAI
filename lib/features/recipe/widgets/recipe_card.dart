@@ -6,7 +6,13 @@ import 'package:fogonesia/widgets/components/save_button.dart';
 
 class RecipeCard extends ConsumerWidget {
   final Recipe recipe;
-  const RecipeCard({super.key, required this.recipe});
+  final void Function(Recipe persisted)? onRecipePersisted;
+
+  const RecipeCard({
+    super.key,
+    required this.recipe,
+    this.onRecipePersisted,
+  });
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -41,7 +47,7 @@ class RecipeCard extends ConsumerWidget {
                           ),
                     ),
                   ),
-                  _buildTimeChip(context, recipe.time),
+                  _buildTimeChip(context, recipe.displayTimeMinutes),
                 ],
               ),
               const SizedBox(height: 12),
@@ -73,7 +79,10 @@ class RecipeCard extends ConsumerWidget {
               ),
               Align(
                 alignment: Alignment.centerRight,
-                child: SaveButton(recipe: recipe),
+                child: SaveButton(
+                  recipe: recipe,
+                  onPersisted: onRecipePersisted,
+                ),
               ),
             ],
           ),
@@ -82,7 +91,8 @@ class RecipeCard extends ConsumerWidget {
     );
   }
 
-  Widget _buildTimeChip(BuildContext context, int time) {
+  Widget _buildTimeChip(BuildContext context, int minutes) {
+    final label = minutes > 0 ? '$minutes mins' : '—';
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
       decoration: BoxDecoration(
@@ -94,7 +104,7 @@ class RecipeCard extends ConsumerWidget {
           const Icon(Icons.timer_outlined, size: 16, color: Colors.white),
           const SizedBox(width: 4),
           Text(
-            '$time mins',
+            label,
             style: const TextStyle(
               color: Colors.white,
               fontWeight: FontWeight.bold,
