@@ -4,6 +4,7 @@ import 'package:fogonesia/data/providers/database_providers.dart';
 import 'package:fogonesia/features/recipe/controller/recipe_controller.dart';
 import 'package:fogonesia/features/recipe/model/nutrition_info.dart';
 import 'package:fogonesia/features/recipe/model/recipe.dart';
+import 'package:fogonesia/shared/remove_saved_recipe_dialog.dart';
 import 'package:go_router/go_router.dart';
 
 class RecipeDetailsScreen extends ConsumerWidget {
@@ -44,49 +45,91 @@ class RecipeDetailsScreen extends ConsumerWidget {
               ),
             ],
           ),
-          body: SingleChildScrollView(
-            padding: const EdgeInsets.all(16),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                labelsAsync.when(
-                  loading: () => const SizedBox.shrink(),
-                  error: (_, __) => const SizedBox.shrink(),
-                  data: (labels) {
-                    if (labels.isEmpty) return const SizedBox.shrink();
-                    return Padding(
-                      padding: const EdgeInsets.only(bottom: 16),
-                      child: Wrap(
-                        spacing: 8,
-                        runSpacing: 8,
-                        children: labels
-                            .map(
-                              (l) => Chip(
-                                label: Text(l),
-                                visualDensity: VisualDensity.compact,
-                              ),
-                            )
-                            .toList(),
+          body: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Expanded(
+                child: SingleChildScrollView(
+                  padding: const EdgeInsets.all(16),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      labelsAsync.when(
+                        loading: () => const SizedBox.shrink(),
+                        error: (_, __) => const SizedBox.shrink(),
+                        data: (labels) {
+                          if (labels.isEmpty) return const SizedBox.shrink();
+                          return Padding(
+                            padding: const EdgeInsets.only(bottom: 16),
+                            child: Wrap(
+                              spacing: 8,
+                              runSpacing: 8,
+                              children: labels
+                                  .map(
+                                    (l) => Chip(
+                                      label: Text(l),
+                                      visualDensity: VisualDensity.compact,
+                                    ),
+                                  )
+                                  .toList(),
+                            ),
+                          );
+                        },
                       ),
-                    );
-                  },
+                      _section('Description', recipe.description),
+                      _ingredients(recipe.ingredients),
+                      _instructions(recipe.instructions),
+                      _meta(recipe.displayTimeMinutes),
+                      nutritionAsync.when(
+                        loading: () => const SizedBox.shrink(),
+                        error: (_, __) => const SizedBox.shrink(),
+                        data: (n) {
+                          if (n == null || !n.hasAnyData) {
+                            return const SizedBox.shrink();
+                          }
+                          return _nutritionSection(n);
+                        },
+                      ),
+                    ],
+                  ),
                 ),
-                _section('Description', recipe.description),
-                _ingredients(recipe.ingredients),
-                _instructions(recipe.instructions),
-                _meta(recipe.displayTimeMinutes),
-                nutritionAsync.when(
-                  loading: () => const SizedBox.shrink(),
-                  error: (_, __) => const SizedBox.shrink(),
-                  data: (n) {
-                    if (n == null || !n.hasAnyData) {
-                      return const SizedBox.shrink();
+              ),
+              SafeArea(
+                minimum: const EdgeInsets.fromLTRB(16, 8, 16, 16),
+                child: OutlinedButton.icon(
+                  icon: Icon(
+                    Icons.delete_outline,
+                    color: Theme.of(context).colorScheme.error,
+                  ),
+                  label: Text(
+                    'Remove from saved',
+                    style: TextStyle(
+                      color: Theme.of(context).colorScheme.error,
+                    ),
+                  ),
+                  onPressed: () async {
+                    final confirm =
+                        await showRemoveSavedRecipeDialog(context);
+                    if (!confirm || !context.mounted) return;
+                    final deleted = await ref
+                        .read(recipeControllerProvider.notifier)
+                        .deleteSavedRecipe(recipeId);
+                    if (!context.mounted) return;
+                    if (deleted) {
+                      context.pop();
+                    } else {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          content: Text(
+                            'Could not remove recipe. Try again.',
+                          ),
+                        ),
+                      );
                     }
-                    return _nutritionSection(n);
                   },
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
         );
       },

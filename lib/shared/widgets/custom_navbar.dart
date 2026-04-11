@@ -21,7 +21,7 @@ class CustomNavbar extends StatelessWidget {
       onTap: onTap,
       items: const [
         BottomNavigationBarItem(icon: Icon(Icons.chat), label: 'Chat'),
-        BottomNavigationBarItem(icon: Icon(Icons.receipt), label: 'Recipes'),
+        BottomNavigationBarItem(icon: Icon(Icons.receipt), label: 'Saved'),
         BottomNavigationBarItem(
           icon: Icon(Icons.settings),
           label: 'Dietary Prefs',

@@ -3,13 +3,13 @@ import 'package:fogonesia/data/providers/database_providers.dart';
 import 'package:fogonesia/features/auth/auth_providers.dart';
 import 'package:fogonesia/features/recipe/model/recipe.dart';
 
-/// Exposes **favorited** recipes for the signed-in user (`favorites` ⋈ `recipes`).
+/// Exposes **saved** recipes for the signed-in user (`favorites` ⋈ `recipes`).
 ///
 /// **Persistence:** [recipeRepositoryProvider] + Firebase uid.
 final recipeControllerProvider =
     AsyncNotifierProvider<RecipeController, List<Recipe>>(RecipeController.new);
 
-/// Keeps the favorited list in memory and syncs with Drift.
+/// Keeps the saved list in memory and syncs with Drift.
 class RecipeController extends AsyncNotifier<List<Recipe>> {
   List<Recipe> _allSaved = [];
   String _filterQuery = '';
@@ -43,25 +43,14 @@ class RecipeController extends AsyncNotifier<List<Recipe>> {
         .toList();
   }
 
-  /// New recipe: `recipes` + `favorites`. Remove: drop link + delete recipe row.
-  ///
-  /// Returns the persisted recipe when a **new** favourite is created or an
-  /// existing row is starred; `null` when removing a favourite or on error
-  /// before state is updated.
-  Future<Recipe?> toggleFavourite(Recipe recipe) async {
+  /// Persists a new recipe or stars an existing row; does **not** remove saves.
+  /// Call only when [isSaved] is false; when already saved, the UI shows a snackbar.
+  Future<Recipe?> saveRecipe(Recipe recipe) async {
     final user = ref.read(firebaseAuthProvider).currentUser;
     if (user == null) return null;
 
     final repo = ref.read(recipeRepositoryProvider);
     try {
-      final isSaved = recipe.id != null &&
-          _allSaved.any((r) => r.id == recipe.id);
-      if (isSaved) {
-        await repo.unfavoriteAndDeleteRecipe(user.uid, recipe.id!);
-        _allSaved.removeWhere((r) => r.id == recipe.id);
-        state = AsyncData([..._filtered]);
-        return null;
-      }
       if (recipe.id == null) {
         final saved = await repo.createAndFavoriteRecipe(recipe, user.uid);
         _allSaved.add(saved);
@@ -81,7 +70,24 @@ class RecipeController extends AsyncNotifier<List<Recipe>> {
     }
   }
 
-  bool isFavourite(Recipe recipe) {
+  /// Deletes the recipe row and related data after the user confirms in the UI.
+  Future<bool> deleteSavedRecipe(String recipeId) async {
+    final user = ref.read(firebaseAuthProvider).currentUser;
+    if (user == null) return false;
+
+    final repo = ref.read(recipeRepositoryProvider);
+    try {
+      await repo.unfavoriteAndDeleteRecipe(user.uid, recipeId);
+      _allSaved.removeWhere((r) => r.id == recipeId);
+      state = AsyncData([..._filtered]);
+      return true;
+    } catch (e, st) {
+      state = AsyncError(e, st);
+      return false;
+    }
+  }
+
+  bool isSaved(Recipe recipe) {
     if (recipe.id == null) return false;
     return _allSaved.any((r) => r.id == recipe.id);
   }

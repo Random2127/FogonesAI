@@ -3,13 +3,12 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:fogonesia/features/recipe/controller/recipe_controller.dart';
 import 'package:fogonesia/features/recipe/model/recipe.dart';
 
-/// Heart toggle: saves a new recipe row (UUID) or removes by [Recipe.id].
+/// Heart: **save only** (no delete). When already saved, shows a snackbar.
 ///
-/// **Flow:** [RecipeController.toggleFavourite] → [recipeRepositoryProvider] → `recipes` table.
-/// [select] limits rebuilds to whether this [recipe.id] appears in the saved list.
+/// **Flow:** [RecipeController.saveRecipe] → [recipeRepositoryProvider] → Drift.
+/// [select] limits rebuilds to whether this recipe appears in the saved list.
 ///
-/// [onPersisted] runs when a recipe is **saved or re-starred** (not on unfavourite),
-/// e.g. chat can replace the in-memory [Recipe] so the heart reflects the new id.
+/// [onPersisted] runs when a recipe is newly saved so chat can update [Recipe.id].
 class SaveButton extends ConsumerWidget {
   final Recipe recipe;
   final void Function(Recipe persisted)? onPersisted;
@@ -20,7 +19,7 @@ class SaveButton extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final controller = ref.read(recipeControllerProvider.notifier);
 
-    final isFavourite = ref.watch(
+    final isRecipeSaved = ref.watch(
       recipeControllerProvider.select(
         (state) =>
             state.whenOrNull(
@@ -34,13 +33,20 @@ class SaveButton extends ConsumerWidget {
 
     return FloatingActionButton(
       mini: true,
+      tooltip: isRecipeSaved ? 'Saved' : 'Save recipe',
       onPressed: () async {
-        final persisted = await controller.toggleFavourite(recipe);
+        if (isRecipeSaved) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Recipe already saved')),
+          );
+          return;
+        }
+        final persisted = await controller.saveRecipe(recipe);
         if (persisted != null) {
           onPersisted?.call(persisted);
         }
       },
-      child: Icon(isFavourite ? Icons.favorite : Icons.favorite_border),
+      child: Icon(isRecipeSaved ? Icons.favorite : Icons.favorite_border),
     );
   }
 }

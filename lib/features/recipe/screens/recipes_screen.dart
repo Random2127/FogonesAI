@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:fogonesia/features/recipe/controller/recipe_controller.dart';
+import 'package:fogonesia/shared/remove_saved_recipe_dialog.dart';
 import 'package:go_router/go_router.dart';
 
 class RecipesScreen extends ConsumerWidget {
@@ -18,7 +19,7 @@ class RecipesScreen extends ConsumerWidget {
             padding: const EdgeInsets.all(8),
             child: SearchBar(
               leading: const Icon(Icons.search),
-              hintText: 'Search recipes...',
+              hintText: 'Search saved recipes...',
               hintStyle: WidgetStateProperty.all(
                 const TextStyle(color: Colors.grey),
               ),
@@ -39,30 +40,68 @@ class RecipesScreen extends ConsumerWidget {
                         itemCount: recipes.length,
                         itemBuilder: (context, index) {
                           final recipe = recipes[index];
-                          return Card(
-                            elevation: 2,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(12),
+                          final id = recipe.id;
+                          if (id == null) {
+                            return const SizedBox.shrink();
+                          }
+                          return Dismissible(
+                            key: ValueKey('saved_$id'),
+                            direction: DismissDirection.endToStart,
+                            confirmDismiss: (_) async {
+                              final confirm =
+                                  await showRemoveSavedRecipeDialog(context);
+                              if (!confirm) return false;
+                              final ok = await ref
+                                  .read(recipeControllerProvider.notifier)
+                                  .deleteSavedRecipe(id);
+                              if (!ok && context.mounted) {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(
+                                    content: Text(
+                                      'Could not remove recipe. Try again.',
+                                    ),
+                                  ),
+                                );
+                              }
+                              return ok;
+                            },
+                            background: Container(
+                              alignment: Alignment.centerRight,
+                              padding: const EdgeInsets.only(right: 20),
+                              decoration: BoxDecoration(
+                                color: Theme.of(context).colorScheme.error,
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                              child: const Icon(
+                                Icons.delete_outline,
+                                color: Colors.white,
+                                size: 28,
+                              ),
                             ),
-                            margin: const EdgeInsets.symmetric(vertical: 6),
-                            child: ListTile(
-                              contentPadding: const EdgeInsets.all(12),
-                              title: Text(
-                                recipe.title,
-                                style: Theme.of(context).textTheme.titleMedium,
+                            child: Card(
+                              elevation: 2,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(12),
                               ),
-                              subtitle: Text(
-                                recipe.description,
-                                maxLines: 2,
-                                overflow: TextOverflow.ellipsis,
-                              ),
-                              trailing: const Icon(Icons.chevron_right),
-                              onTap: () {
-                                final id = recipe.id;
-                                if (id != null) {
+                              margin: const EdgeInsets.symmetric(vertical: 6),
+                              child: ListTile(
+                                contentPadding: const EdgeInsets.all(12),
+                                title: Text(
+                                  recipe.title,
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .titleMedium,
+                                ),
+                                subtitle: Text(
+                                  recipe.description,
+                                  maxLines: 2,
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                                trailing: const Icon(Icons.chevron_right),
+                                onTap: () {
                                   context.push('/recipe/$id');
-                                }
-                              },
+                                },
+                              ),
                             ),
                           );
                         },

@@ -20,7 +20,7 @@ class Recipe {
   final String? difficulty;
   final String? imageUrl;
 
-  /// Parsed from Gemini; persisted in `nutrition` when saving a favourite.
+  /// Parsed from Gemini; persisted in `nutrition` when saving to the library.
   final NutritionInfo? nutrition;
 
   Recipe({

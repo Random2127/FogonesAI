@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:fogonesia/features/recipe/controller/recipe_controller.dart';
 import 'package:fogonesia/features/recipe/model/recipe.dart';
 import 'package:fogonesia/widgets/components/save_button.dart';
 
-class RecipeCard extends ConsumerWidget {
+class RecipeCard extends StatelessWidget {
   final Recipe recipe;
   final void Function(Recipe persisted)? onRecipePersisted;
 
@@ -15,11 +13,7 @@ class RecipeCard extends ConsumerWidget {
   });
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    ref.read(recipeControllerProvider.notifier);
-    final controller = ref.watch(recipeControllerProvider.notifier);
-    controller.isFavourite(recipe);
-
+  Widget build(BuildContext context) {
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       decoration: BoxDecoration(
